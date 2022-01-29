@@ -1,0 +1,11 @@
+*{
+    padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+#pixi-canvas{
+    position: absolute;
+    top: 5rem;
+    left: 5rem;
+}
