@@ -1,6 +1,6 @@
 import { gsap } from "gsap"
 import { ASSETS } from "../assets/assets"
-import { BETS, STARTING_BALANCE } from "../constants/constants"
+import { BETS, SpinBtnState, STARTING_BALANCE } from "../constants/constants"
 import { WIN_LINES_DATA } from "../constants/winLinesData"
 
 export class DataController{
@@ -8,7 +8,7 @@ export class DataController{
     private numberOfLines= WIN_LINES_DATA.length
     private selectedBetOption= 3
     private balance= STARTING_BALANCE
-    private spinning= false
+    private spinBtnState= SpinBtnState.Neutral
     private autoSpinActivated= false
     public animationSequencer
 
@@ -81,12 +81,12 @@ export class DataController{
         return this.balance
     }
 
-    public setSpinning(_isSpinning: boolean){
-        this.spinning= _isSpinning
+    public setSpinBtnState(state: SpinBtnState){
+        this.spinBtnState= state
     }
 
-    public isSpinning(){
-        return this.spinning
+    public getSpinBtnState(){
+        return this.spinBtnState
     }
 
     public reverseAutoSpinActivated(){

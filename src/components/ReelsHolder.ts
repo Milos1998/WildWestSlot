@@ -1,5 +1,5 @@
 import { Container, Graphics } from "pixi.js";
-import { REELS_HOLDER_FRAME_THICKNESS, REELS_PER_REEL_HOLDER, REEL_HEIGHT, REEL_SPIN_DELAY, REEL_WIDTH, STRIPE_SIZE } from "../constants/constants";
+import { REELS_HOLDER_FRAME_THICKNESS, REELS_PER_REEL_HOLDER, REEL_HEIGHT, REEL_SPIN_DELAY, REEL_SPIN_END_ROTATION, REEL_SPIN_MID_ROTATION, REEL_SPIN_START_ROTATION, REEL_WIDTH, STRIPE_SIZE } from "../constants/constants";
 import { dataController } from "../logic/DataController";
 import { Reel } from "./Reel";
 
@@ -40,15 +40,16 @@ export class ReelsHolder extends Container{
             dataController.animationSequencer.add(this.reels[i].spinReel(), `<${REEL_SPIN_DELAY}`)
         }
 
+        dataController.animationSequencer.addLabel("endAnimation", REEL_SPIN_START_ROTATION + REEL_SPIN_MID_ROTATION)
         dataController.animationSequencer.pause()
     }
 
-    public calculateWin(){
+    public getSymbolsCombination(){
         let symCombination= []
         for(let i= 0; i < this.reels.length; i++){
             symCombination.push(this.reels[i].getSymbols())
         }
 
-        //TODO
+        return symCombination
     }
 }

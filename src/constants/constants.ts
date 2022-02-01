@@ -61,3 +61,12 @@ export const REEL_SPIN_DELAY= 0.15
 export const REEL_SPIN_START_ROTATION= 1
 export const REEL_SPIN_MID_ROTATION= 3
 export const REEL_SPIN_END_ROTATION= 1
+
+
+//enums
+export enum SpinBtnState{
+    Neutral,
+    Skip,
+    Skipping,
+    Collect
+}

@@ -1,5 +1,6 @@
 import { Graphics, Sprite, TextStyle, Text, Texture } from "pixi.js";
-import { BUTTONS_FRAME_COLOR, BUTTONS_FRAME_THICKNESS, BUTTON_DECORATION_ACTIVE_COLOR, BUTTON_DECORATION_INACTIVE_COLOR, DISPLAYS_FONT_FAMILY, SPIN_BUTTON_ACTIVE_COLOR, SPIN_BUTTON_INACTIVE_TINT } from "../constants/constants";
+import { SpinBtnState, BUTTONS_FRAME_COLOR, BUTTONS_FRAME_THICKNESS, BUTTON_DECORATION_ACTIVE_COLOR, BUTTON_DECORATION_INACTIVE_COLOR, DISPLAYS_FONT_FAMILY, SPIN_BUTTON_ACTIVE_COLOR, SPIN_BUTTON_INACTIVE_TINT } from "../constants/constants";
+import { dataController } from "../logic/DataController";
 import { gameController } from "../logic/GameController";
 
 let descriptionStyle= new TextStyle({
@@ -41,7 +42,22 @@ export class SpinButton extends Graphics{
         this.addChild(this.description)
 
         //add functionality
-        this.addListener("pointertap", e => gameController.spinManually())
+        this.addListener("pointertap", e => {
+            switch (dataController.getSpinBtnState()){
+                case SpinBtnState.Neutral:{
+                    gameController.spinManually()
+                    break;
+                }
+                case SpinBtnState.Skip:{
+                    gameController.skipSpinAnimation()
+                    break;
+                }
+                case SpinBtnState.Collect:{
+                    gameController.collectCash()
+                    break;
+                }
+            }
+        })
         this.interactive= true        
     }
 
@@ -57,6 +73,7 @@ export class SpinButton extends Graphics{
         this.description.y= this.height - this.description.height*2/3 - BUTTONS_FRAME_THICKNESS
 
         this.interactive= true
+        dataController.setSpinBtnState(SpinBtnState.Neutral)
     }
 
     public setStateSkip(){
@@ -71,6 +88,7 @@ export class SpinButton extends Graphics{
         this.description.y= this.height - this.description.height*2/3 - BUTTONS_FRAME_THICKNESS
 
         this.interactive= true
+        dataController.setSpinBtnState(SpinBtnState.Skip)
     }
 
     public setStateDisabledSkip(){
@@ -85,6 +103,7 @@ export class SpinButton extends Graphics{
         this.description.y= this.height - this.description.height*2/3 - BUTTONS_FRAME_THICKNESS
 
         this.interactive= false
+        dataController.setSpinBtnState(SpinBtnState.Skipping)
     }
 
     public setStateCollect(){
@@ -97,5 +116,6 @@ export class SpinButton extends Graphics{
         this.description.y= this.height/2
         
         this.interactive= true
+        dataController.setSpinBtnState(SpinBtnState.Collect)
     }
 }

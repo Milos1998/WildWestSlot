@@ -5,15 +5,14 @@ import { AssetLoader } from "./AssetLoader";
 import { dataController } from "./DataController";
 import { gsap } from "gsap"
 import { PixiPlugin } from "gsap/PixiPlugin"
-import { REEL_SPIN_MID_ROTATION, REEL_SPIN_START_ROTATION } from "../constants/constants";
+import { winCalculator } from "./winCalculator";
 
 //Syncs processes of the game
 class GameController{
     private app: Application= undefined as any
     private slotMachine: SlotMachine= undefined as any
 
-    constructor(){      //we are using GameController as if it was static class
-
+    constructor(){
     }
 
     public initGameController(_app: Application){
@@ -23,9 +22,10 @@ class GameController{
         this.app.stage.addChild(loader)
     }
 
+    //get's called from Loader when caching is finished 
     public initGameElements(){
         PixiPlugin.registerPIXI(PIXI)
-        gsap.registerPlugin(PixiPlugin)        
+        gsap.registerPlugin(PixiPlugin)
 
         this.slotMachine= new SlotMachine()
         this.app.stage.addChild(this.slotMachine)
@@ -96,10 +96,18 @@ class GameController{
         this.slotMachine.winLines.hideAllLines()
     }
 
-    public spinAutomatiaclly(){
-        dataController.reverseAutoSpinActivated()
+    public skipSpinAnimation(){
+        dataController.animationSequencer.seek("endAnimation")
+    }
 
-//        dataController.animationSequencer.seek(REEL_SPIN_START_ROTATION + REEL_SPIN_MID_ROTATION)
+    public collectCash(){
+        //TODO
+
+    }
+
+    public spinAutomatiaclly(){
+        //TODO
+        dataController.reverseAutoSpinActivated()
     }
 
     public async spinManually(){
@@ -110,9 +118,13 @@ class GameController{
         this.slotMachine.winLines.hideAllLines()
 
         this.slotMachine.reelsHolder.spinReels()
+        //I have to use bind in setStateDisabledSkip because we don't know context for this, because I'm not initing slotMachine from constructor because of loader  //TODO: fix if possible
+        dataController.animationSequencer.call(this.slotMachine.spinButton.setStateDisabledSkip.bind(this.slotMachine.spinButton), undefined, "endAnimation")
         await dataController.animationSequencer.play().then(()=>{dataController.animationSequencer.clear()})
 
-        //TODO sredi dugme da prati animaciju i odradi winline da racuna dobitak.
+        //TODO odradi winline da racuna dobitak.
+        winCalculator.calculateWin(this.slotMachine.reelsHolder.getSymbolsCombination())
+
 
         this.slotMachine.autoSpinButton.setStateOffEnabled()
         this.slotMachine.spinButton.setStateNeutral()
