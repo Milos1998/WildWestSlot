@@ -1,10 +1,10 @@
 import { Container, Graphics, Loader } from "pixi.js";
 import { ASSETS } from "../assets/assets";
 import { APP_HEIGHT, APP_WIDTH } from "../constants/constants";
-import { gameController } from "./GameController";
+import gameController from "./GameController";
 
 
-export class AssetLoader extends Container{
+export default class AssetLoader extends Container{
     private loadProgressionBar: Graphics
     private progressBar: Graphics
 

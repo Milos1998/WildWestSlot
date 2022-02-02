@@ -1,7 +1,7 @@
 import { Graphics, Sprite, TextStyle, Text } from "pixi.js";
 import { AUTO_SPIN_BUTTON_OFF_COLOR, AUTO_SPIN_BUTTON_OFF_INACTIVE_TINT, AUTO_SPIN_BUTTON_ON_COLOR, BUTTONS_FRAME_COLOR, BUTTONS_FRAME_THICKNESS, BUTTON_DECORATION_ACTIVE_COLOR, BUTTON_DECORATION_INACTIVE_COLOR, DISPLAYS_FONT_FAMILY } from "../constants/constants";
-import { dataController } from "../logic/DataController";
-import { gameController } from "../logic/GameController";
+import dataController from "../logic/DataController";
+import gameController from "../logic/GameController";
 
 let descriptionStyle= new TextStyle({
     fill: 0xFFFFFF,
@@ -9,7 +9,7 @@ let descriptionStyle= new TextStyle({
     fontSize: 15,
 })
 
-export class AutoSpinButton extends Graphics{
+export default class AutoSpinButton extends Graphics{
     private image:Sprite
     private description: Text
 

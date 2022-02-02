@@ -1,7 +1,7 @@
 import { Sprite, Texture } from "pixi.js";
-import { dataController } from "../logic/DataController";
+import dataController from "../logic/DataController";
 
-export class Stripe extends Sprite{
+export default class Stripe extends Sprite{
     private static stripeSymbols: string[]= dataController.getStripeSymbols()
     private symbol= ""
 

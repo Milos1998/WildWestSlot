@@ -1,9 +1,9 @@
 import { Container, Graphics } from "pixi.js";
 import { REELS_HOLDER_FRAME_THICKNESS, STRIPE_SIZE, WIN_LINE_THICKNESS } from "../constants/constants";
 import { LINE_COLORS, LINE_OFFSETS, WIN_LINES_DATA } from "../constants/winLinesData";
-import { dataController } from "../logic/DataController";
+import dataController from "../logic/DataController";
 
-export class WinLines extends Container{
+export default class WinLines extends Container{
     private lines: Graphics[]= []
     constructor(x: number, y: number, width: number, height: number){
         super()

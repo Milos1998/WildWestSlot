@@ -1,14 +1,14 @@
 import { Container, Sprite } from "pixi.js";
 import { BALANCE_Y, BET_SELECTOR_Y, CASH_TRAY_Y, BUTTONS_SIZE, CENTRAL_PANNEL_Y, DISPLAYS_HEIGHT, DISPLAYS_WIDTH, LEFT_PANNEL_X, LINES_SELECTOR_Y, REELS_HOLDER_HEIGHT, REELS_HOLDER_WIDTH, REELS_HOLDER_X, REELS_HOLDER_Y, RIGHT_PANNEL_X, SPIN_BUTTON_X, TOTAL_BET_DISPLAY_Y, AUTO_SPIN_BUTTON_X } from "../constants/constants";
-import { dataController } from "../logic/DataController";
-import { gameController } from "../logic/GameController";
-import { AutoSpinButton } from "./AutoSpinButton";
-import { Display } from "./Display";
-import { ReelsHolder } from "./ReelsHolder";
-import { SpinButton } from "./SpinButton";
-import { WinLines } from "./WinLines";
+import dataController from "../logic/DataController";
+import gameController from "../logic/GameController";
+import AutoSpinButton from "./AutoSpinButton";
+import Display from "./Display";
+import ReelsHolder from "./ReelsHolder";
+import SpinButton from "./SpinButton";
+import WinLines from "./WinLines";
 
-export class SlotMachine extends Container{
+export default class SlotMachine extends Container{
     private machineDecoration: Sprite
     //controllable elements
     public reelsHolder: ReelsHolder

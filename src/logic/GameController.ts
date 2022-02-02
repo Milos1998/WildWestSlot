@@ -1,11 +1,11 @@
 import { Application } from "pixi.js";
 import * as PIXI from "pixi.js"     //for gsap
-import { SlotMachine } from "../components/SlotMachine";
-import { AssetLoader } from "./AssetLoader";
-import { dataController } from "./DataController";
+import SlotMachine from "../components/SlotMachine";
+import AssetLoader from "./AssetLoader";
+import dataController from "./DataController";
 import { gsap } from "gsap"
 import { PixiPlugin } from "gsap/PixiPlugin"
-import { winCalculator } from "./WinCalculator";
+import winCalculator from "./WinCalculator";
 
 //Syncs processes of the game
 class GameController{
@@ -138,4 +138,4 @@ class GameController{
 }
 
 let gameController: GameController= new GameController()
-export {gameController}
+export default gameController

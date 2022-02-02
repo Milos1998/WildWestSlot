@@ -13,7 +13,7 @@ let displayValueStyle= new TextStyle({
     fontSize: 25,
 })
 
-export class Display extends Graphics{
+export default class Display extends Graphics{
     private description: Text
     private displayValue: Text
 

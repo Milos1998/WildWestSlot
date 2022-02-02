@@ -1,9 +1,9 @@
 import { Container, Graphics } from "pixi.js";
 import { REELS_HOLDER_FRAME_THICKNESS, REELS_PER_REEL_HOLDER, REEL_HEIGHT, REEL_SPIN_DELAY, REEL_SPIN_END_ROTATION, REEL_SPIN_MID_ROTATION, REEL_SPIN_START_ROTATION, REEL_WIDTH, STRIPE_SIZE } from "../constants/constants";
-import { dataController } from "../logic/DataController";
-import { Reel } from "./Reel";
+import dataController from "../logic/DataController";
+import Reel from "./Reel";
 
-export class ReelsHolder extends Container{
+export default class ReelsHolder extends Container{
     private reels: Reel[]
 
     constructor(x: number, y: number, width: number, height: number){

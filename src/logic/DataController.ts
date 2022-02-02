@@ -2,7 +2,7 @@ import { gsap } from "gsap"
 import { BETS, SpinBtnState, STARTING_BALANCE } from "../constants/constants"
 import { Symbols, WIN_LINES_DATA } from "../constants/winLinesData"
 
-export class DataController{
+class DataController{
     private stripeSymbols: string[]= this.initStripeSymbols()
     private numberOfLines= WIN_LINES_DATA.length
     private selectedBetOption= 3
@@ -95,4 +95,4 @@ export class DataController{
 }
 
 let dataController: DataController= new DataController()
-export { dataController }
+export default dataController

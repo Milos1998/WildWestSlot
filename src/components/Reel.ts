@@ -1,9 +1,9 @@
 import { gsap } from "gsap"
 import { Container, Sprite, Texture } from "pixi.js";
 import { REEL_SPIN_END_ROTATION, REEL_SPIN_MID_ROTATION, REEL_SPIN_START_ROTATION, STRIPES_PER_REEL, STRIPE_SIZE } from "../constants/constants";
-import { Stripe } from "./Stripe";
+import Stripe from "./Stripe";
 
-export class Reel extends Container{
+export default class Reel extends Container{
     private stripes: Stripe[]
 
     constructor(x: number, y: number, width: number, height: number){

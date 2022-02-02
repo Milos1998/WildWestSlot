@@ -1,5 +1,5 @@
 import { Symbols, WIN_LINES_DATA } from "../constants/winLinesData"
-import { dataController } from "./DataController"
+import dataController from "./DataController"
 
 class winObject{
     public winAmount: number= 0
@@ -60,4 +60,4 @@ class WinCalculator{
 }
 
 const winCalculator: WinCalculator= new WinCalculator()
-export { winCalculator }
+export default winCalculator
