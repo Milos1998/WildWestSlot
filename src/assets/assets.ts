@@ -1,4 +1,5 @@
 export const ASSETS=[
+    //names of stripes must be same as names in winLinesData.ts Symbols object
     {name: "9", url: "./assets/9.jpg", stripe: true},
     {name: "10", url: "./assets/10.jpg", stripe: true},
     {name: "A", url: "./assets/A.jpg", stripe: true},
@@ -18,5 +19,4 @@ export const ASSETS=[
     {name: "skip-animation", url: "./assets/skip-animation.png"},
     {name: "spin", url: "./assets/spin.png"},
     {name: "auto-spin", url: "./assets/auto-spin.png"}
-    
 ]

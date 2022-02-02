@@ -183,5 +183,76 @@ export const WIN_LINES_DATA= [
     }
 ]
 
+export const Symbols= {		//using object instead of enum because I cant make array of enums (eg. Symbols[])
+	Wild: "wild",
+	Sherif: "sherif",
+	Diamonds: "diamonds",
+	Hearts: "hearts",
+	Spades: "spades",
+	Clubs: "clubs",
+	A: "A",
+	K: "K",
+	Q: "Q",
+	J: "J",
+	TEN: "10",
+	NINE: "9",
+	Reward1000: "reward1000"
+}
+
+export const PAYTABLE=[
+	{
+		symbol: Symbols.Wild,
+		payoutPerMatch: [10, 200, 2000, 10000]
+	},
+	{
+		symbol: Symbols.Sherif,
+		payoutPerMatch: [2, 25, 100, 750]
+	},
+	{
+		symbol: Symbols.Clubs,
+		payoutPerMatch: [2, 25, 100, 750]
+	},
+	{
+		symbol: Symbols.Hearts,
+		payoutPerMatch: [0, 15, 100, 400]
+	},
+	{
+		symbol: Symbols.Spades,
+		payoutPerMatch: [0, 10, 75, 250]
+	},
+	{
+		symbol: Symbols.Clubs,
+		payoutPerMatch: [0, 10, 50, 250]
+	},
+	{
+		symbol: Symbols.A,
+		payoutPerMatch: [0, 10, 50, 125]
+	},
+	{
+		symbol: Symbols.K,
+		payoutPerMatch: [0, 5, 50, 100]
+	},
+	{
+		symbol: Symbols.Q,
+		payoutPerMatch: [0, 5, 25, 100]
+	},
+	{
+		symbol: Symbols.J,
+		payoutPerMatch: [0, 5, 25, 100]
+	},
+	{
+		symbol: Symbols.TEN,
+		payoutPerMatch: [0, 5, 25, 100]
+	},
+	{
+		symbol: Symbols.NINE,
+		payoutPerMatch: [2, 5, 25, 100]
+	},
+	{
+		symbol: Symbols.Reward1000,
+		specialPayout: [1, 3, 10, 100, 1000]
+	}
+]
+
 export const LINE_OFFSETS= [0, STRIPE_SIZE/8, -STRIPE_SIZE/8, 2*STRIPE_SIZE/8, -2*STRIPE_SIZE/8]
 export const LINE_COLORS= [0xC70000, 0x0300C7, 0xFCEC00, 0x14C400, 0xFA00E5]

@@ -1,7 +1,6 @@
 import { gsap } from "gsap"
-import { ASSETS } from "../assets/assets"
 import { BETS, SpinBtnState, STARTING_BALANCE } from "../constants/constants"
-import { WIN_LINES_DATA } from "../constants/winLinesData"
+import { Symbols, WIN_LINES_DATA } from "../constants/winLinesData"
 
 export class DataController{
     private stripeSymbols: string[]= this.initStripeSymbols()
@@ -21,12 +20,9 @@ export class DataController{
     }
 
     private initStripeSymbols(){
-        let tmp: string[]= []
-        ASSETS.forEach((el) => {
-            if(el.stripe)
-                tmp.push(el.name)
-        })
-        return tmp
+        let syms: string[]= []
+        Object.values(Symbols).forEach(sym => syms.push(sym))
+        return syms
     }
 
     public getMaxNumberOfLines(){

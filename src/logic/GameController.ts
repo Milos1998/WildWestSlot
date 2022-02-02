@@ -5,7 +5,7 @@ import { AssetLoader } from "./AssetLoader";
 import { dataController } from "./DataController";
 import { gsap } from "gsap"
 import { PixiPlugin } from "gsap/PixiPlugin"
-import { winCalculator } from "./winCalculator";
+import { winCalculator } from "./WinCalculator";
 
 //Syncs processes of the game
 class GameController{
