@@ -3,7 +3,8 @@ import { BETS, SpinBtnState, STARTING_BALANCE } from "../constants/constants"
 import { Symbols, WIN_LINES_DATA } from "../constants/winLinesData"
 
 class DataController{
-    private stripeSymbols: string[]= this.initStripeSymbols()
+    private stripeSymbols: string[]= []
+    private filteredStripeSymbols: string[]= []
     private numberOfLines= WIN_LINES_DATA.length
     private selectedBetOption= 3
     private balance= STARTING_BALANCE
@@ -13,16 +14,30 @@ class DataController{
 
     constructor(){
         this.animationSequencer= gsap.timeline()
+        this.initStripeSymbols()
+        this.resetStripeSymbolFilter()
     }
 
-    public getStripeSymbols(){
+    public getStripeSymbols(filtered: boolean= true){
+        if (filtered)
+            return this.filteredStripeSymbols
         return this.stripeSymbols
     }
 
     private initStripeSymbols(){
         let syms: string[]= []
         Object.values(Symbols).forEach(sym => syms.push(sym))
-        return syms
+        this.stripeSymbols= syms
+    }
+
+    public filterStripeSymbols(... unwantedSymbols: string[]){
+        this.filteredStripeSymbols= this.filteredStripeSymbols.filter(symbol => {
+            return unwantedSymbols.find(unwanted => unwanted === symbol) === undefined
+        })
+    }
+
+    public resetStripeSymbolFilter(){
+        this.filteredStripeSymbols= this.stripeSymbols
     }
 
     public getMaxNumberOfLines(){

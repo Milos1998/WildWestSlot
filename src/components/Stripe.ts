@@ -2,7 +2,6 @@ import { Sprite, Texture } from "pixi.js";
 import dataController from "../logic/DataController";
 
 export default class Stripe extends Sprite{
-    private static stripeSymbols: string[]= dataController.getStripeSymbols()
     private symbol= ""
 
     constructor(x: number, y: number, width: number, height: number, textureSource: string= ""){
@@ -17,9 +16,10 @@ export default class Stripe extends Sprite{
         this.setSymbol(textureSource)
     }
 
-    private randomSymbolSelection(){    //TODO napravi ovo da radi tako sto ce da vadi iz niza simbola ili sta god
-        let symbolNum= Math.floor(Math.random() * Stripe.stripeSymbols.length)
-        return Stripe.stripeSymbols[symbolNum]
+    private randomSymbolSelection(){
+        let stripeSymbols= dataController.getStripeSymbols()        
+        let symbolNum= Math.floor(Math.random() * stripeSymbols.length)
+        return stripeSymbols[symbolNum]
     }
 
     public setSymbol(textureSource: string= ""){

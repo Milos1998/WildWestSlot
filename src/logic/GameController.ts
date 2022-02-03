@@ -6,6 +6,7 @@ import dataController from "./DataController";
 import { gsap } from "gsap"
 import { PixiPlugin } from "gsap/PixiPlugin"
 import winCalculator from "./WinCalculator";
+import { Symbols } from "../constants/winLinesData";
 
 //Syncs processes of the game
 class GameController{
@@ -29,6 +30,11 @@ class GameController{
 
         this.slotMachine= new SlotMachine()
         this.app.stage.addChild(this.slotMachine)
+        this.applySpecialProperties()
+    }
+
+    private applySpecialProperties(){
+        dataController.filterStripeSymbols(Symbols.NINE, Symbols.TEN, Symbols.J, Symbols.K, Symbols.Q, Symbols.A)
     }
 
     //controlling selectors
@@ -42,7 +48,7 @@ class GameController{
 
         //set states for displays        
         this.slotMachine.linesSelector.setDisplayValue(newNumOfLines)
-        this.slotMachine.totalBetDisplay.setDisplayValue((Math.round(dataController.getTotalBet()*100)/100))
+        this.slotMachine.totalBetDisplay.setDisplayValue(dataController.getTotalBet())
 
         //display lines
         this.slotMachine.winLines.displayOnlySelectedLines()
@@ -58,7 +64,7 @@ class GameController{
         
         //set states for displays        
         this.slotMachine.linesSelector.setDisplayValue(newNumOfLines)
-        this.slotMachine.totalBetDisplay.setDisplayValue((Math.round(dataController.getTotalBet()*100)/100))
+        this.slotMachine.totalBetDisplay.setDisplayValue(dataController.getTotalBet())
 
         //display lines
         this.slotMachine.winLines.displayOnlySelectedLines()
@@ -74,7 +80,7 @@ class GameController{
 
         //set states for displays
         this.slotMachine.betSelector.setDisplayValue(newBet)
-        this.slotMachine.totalBetDisplay.setDisplayValue((Math.round(dataController.getTotalBet()*100)/100))
+        this.slotMachine.totalBetDisplay.setDisplayValue(dataController.getTotalBet())
 
         //hide winLines
         this.slotMachine.winLines.hideAllLines()
@@ -90,7 +96,7 @@ class GameController{
 
         //set states for displays
         this.slotMachine.betSelector.setDisplayValue(newBet)
-        this.slotMachine.totalBetDisplay.setDisplayValue((Math.round(dataController.getTotalBet()*100)/100))
+        this.slotMachine.totalBetDisplay.setDisplayValue(dataController.getTotalBet())
 
         //hide winLines
         this.slotMachine.winLines.hideAllLines()
@@ -106,7 +112,7 @@ class GameController{
     }
 
     public spinAutomatiaclly(){
-        //TODO
+        //TODO  refactore spin logic
         dataController.reverseAutoSpinActivated()
     }
 
@@ -120,10 +126,14 @@ class GameController{
         this.slotMachine.reelsHolder.spinReels()
         //I have to use bind in setStateDisabledSkip because we don't know context for this, because I'm not initing slotMachine from constructor because of loader  //TODO: fix if possible
         dataController.animationSequencer.call(this.slotMachine.spinButton.setStateDisabledSkip.bind(this.slotMachine.spinButton), undefined, "endAnimation")
-        await dataController.animationSequencer.play().then(()=>{dataController.animationSequencer.clear()})
+        await dataController.animationSequencer.play("spinReels").then(()=>{dataController.animationSequencer.clear()})
 
-        //TODO odradi winline da racuna dobitak.
-        winCalculator.calculateWin(this.slotMachine.reelsHolder.getSymbolsCombination())
+        let {totalCashWin, wins}= winCalculator.calculateWin(this.slotMachine.reelsHolder.getSymbolsCombination())
+        this.slotMachine.cashTray.setDisplayValue(totalCashWin)
+        console.log(totalCashWin)
+        console.log(wins);
+        //TODO add winLine animations and rest of the logic
+        
 
 
         this.slotMachine.autoSpinButton.setStateOffEnabled()

@@ -52,7 +52,9 @@ export default class Display extends Graphics{
     }
 
     public setDisplayValue(newDisplayValue: string | number){
-        this.displayValue.text= newDisplayValue.toString()
+        if(typeof newDisplayValue === "number")
+            newDisplayValue= (Math.round(newDisplayValue*100)/100).toString()
+        this.displayValue.text= newDisplayValue
     }
 
     public disableLessButton(){

@@ -202,54 +202,55 @@ export const Symbols= {		//using object instead of enum because I cant make arra
 export const PAYTABLE=[
 	{
 		symbol: Symbols.Wild,
-		payoutPerMatch: [10, 200, 2000, 10000]
+		payoutPerMatch: [0, 10, 200, 2000, 10000]
 	},
 	{
 		symbol: Symbols.Sherif,
-		payoutPerMatch: [2, 25, 100, 750]
+		payoutPerMatch: [0, 2, 25, 100, 750]
 	},
 	{
-		symbol: Symbols.Clubs,
-		payoutPerMatch: [2, 25, 100, 750]
+		symbol: Symbols.Diamonds,
+		payoutPerMatch: [0, 2, 25, 100, 750]
 	},
 	{
 		symbol: Symbols.Hearts,
-		payoutPerMatch: [0, 15, 100, 400]
+		payoutPerMatch: [0, 0, 15, 100, 400]
 	},
 	{
 		symbol: Symbols.Spades,
-		payoutPerMatch: [0, 10, 75, 250]
+		payoutPerMatch: [0, 0, 10, 75, 250]
 	},
 	{
 		symbol: Symbols.Clubs,
-		payoutPerMatch: [0, 10, 50, 250]
+		payoutPerMatch: [0, 0, 10, 50, 250]
 	},
 	{
 		symbol: Symbols.A,
-		payoutPerMatch: [0, 10, 50, 125]
+		payoutPerMatch: [0, 0, 10, 50, 125]
 	},
 	{
 		symbol: Symbols.K,
-		payoutPerMatch: [0, 5, 50, 100]
+		payoutPerMatch: [0, 0, 5, 50, 100]
 	},
 	{
 		symbol: Symbols.Q,
-		payoutPerMatch: [0, 5, 25, 100]
+		payoutPerMatch: [0, 0, 5, 25, 100]
 	},
 	{
 		symbol: Symbols.J,
-		payoutPerMatch: [0, 5, 25, 100]
+		payoutPerMatch: [0, 0, 5, 25, 100]
 	},
 	{
 		symbol: Symbols.TEN,
-		payoutPerMatch: [0, 5, 25, 100]
+		payoutPerMatch: [0, 0, 5, 25, 100]
 	},
 	{
 		symbol: Symbols.NINE,
-		payoutPerMatch: [2, 5, 25, 100]
+		payoutPerMatch: [0, 2, 5, 25, 100]
 	},
 	{
 		symbol: Symbols.Reward1000,
+		payoutPerMatch: [],
 		specialPayout: [1, 3, 10, 100, 1000]
 	}
 ]

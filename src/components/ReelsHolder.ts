@@ -31,11 +31,13 @@ export default class ReelsHolder extends Container{
     private makeReelsPretty(){
         let symbols= dataController.getStripeSymbols()
         for(let i= 0; i < this.reels.length; i++){
-            this.reels[i].makeAllStripesIdentical(symbols[symbols.length-1-i])
+            this.reels[i].makeAllStripesIdentical(symbols[i])
         }
     }
 
     public spinReels(){
+        dataController.animationSequencer.addLabel("spinReels")
+
         for(let i= 0; i < this.reels.length; i++){
             dataController.animationSequencer.add(this.reels[i].spinReel(), `<${REEL_SPIN_DELAY}`)
         }
