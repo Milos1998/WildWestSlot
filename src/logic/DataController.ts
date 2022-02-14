@@ -3,7 +3,7 @@ import { BETS, SpinBtnState, STARTING_BALANCE } from '../constants/constants'
 import { Symbols, WIN_LINES_DATA } from '../constants/winLinesData'
 
 class DataController {
-    private static instance: DataController = undefined as any
+    private static instance: DataController | undefined = undefined
     private stripeSymbols: string[] = []
     private filteredStripeSymbols: string[] = []
     private numberOfLines = WIN_LINES_DATA.length

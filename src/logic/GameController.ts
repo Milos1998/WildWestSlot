@@ -10,8 +10,10 @@ import { Symbols } from '../constants/winLinesData'
 
 //Syncs processes of the game
 class GameController {
-    private static instance: GameController = undefined as any
+    private static instance: GameController | undefined = undefined
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private app: Application = undefined as any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private slotMachine: SlotMachine = undefined as any
 
     public static getInstance() {
@@ -43,64 +45,51 @@ class GameController {
         dataController.filterStripeSymbols(Symbols.NINE, Symbols.TEN, Symbols.J, Symbols.K, Symbols.Q, Symbols.A)
     }
 
-    //controlling selectors
     public increaseNumberOfLines() {
         const newNumOfLines = dataController.incrementNumberOfLines()
 
-        //set correct states for buttons
         if (newNumOfLines === dataController.getMaxNumberOfLines()) this.slotMachine.linesSelector.disableMoreButton()
         this.slotMachine.linesSelector.enableLessButton()
 
-        //set states for displays
         this.slotMachine.linesSelector.setDisplayValue(newNumOfLines)
         this.slotMachine.totalBetDisplay.setDisplayValue(dataController.getTotalBet())
 
-        //display lines
         this.slotMachine.winLines.displayOnlySelectedLines()
     }
 
     public decreaseNumberOfLines() {
         const newNumOfLines = dataController.decrementNumberOfLines()
 
-        //set correct states for buttons
         if (newNumOfLines === 1) this.slotMachine.linesSelector.disableLessButton()
         this.slotMachine.linesSelector.enableMoreButton()
 
-        //set states for displays
         this.slotMachine.linesSelector.setDisplayValue(newNumOfLines)
         this.slotMachine.totalBetDisplay.setDisplayValue(dataController.getTotalBet())
 
-        //display lines
         this.slotMachine.winLines.displayOnlySelectedLines()
     }
 
     public increaseBet() {
         const newBet = dataController.incrementBet()
 
-        //set correct states for buttons
         if (newBet === dataController.getMaxBet()) this.slotMachine.betSelector.disableMoreButton()
         this.slotMachine.betSelector.enableLessButton()
 
-        //set states for displays
         this.slotMachine.betSelector.setDisplayValue(newBet)
         this.slotMachine.totalBetDisplay.setDisplayValue(dataController.getTotalBet())
 
-        //hide winLines
         this.slotMachine.winLines.hideAllLines()
     }
 
     public decreaseBet() {
         const newBet = dataController.decrementBet()
 
-        //set correct states for buttons
         if (newBet === dataController.getMinBet()) this.slotMachine.betSelector.disableLessButton()
         this.slotMachine.betSelector.enableMoreButton()
 
-        //set states for displays
         this.slotMachine.betSelector.setDisplayValue(newBet)
         this.slotMachine.totalBetDisplay.setDisplayValue(dataController.getTotalBet())
 
-        //hide winLines
         this.slotMachine.winLines.hideAllLines()
     }
 
