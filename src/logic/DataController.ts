@@ -1,113 +1,116 @@
-import { gsap } from "gsap"
-import { BETS, SpinBtnState, STARTING_BALANCE } from "../constants/constants"
-import { Symbols, WIN_LINES_DATA } from "../constants/winLinesData"
+import { gsap } from 'gsap'
+import { BETS, SpinBtnState, STARTING_BALANCE } from '../constants/constants'
+import { Symbols, WIN_LINES_DATA } from '../constants/winLinesData'
 
-class DataController{
-    private stripeSymbols: string[]= []
-    private filteredStripeSymbols: string[]= []
-    private numberOfLines= WIN_LINES_DATA.length
-    private selectedBetOption= 3
-    private balance= STARTING_BALANCE
-    private spinBtnState= SpinBtnState.Neutral
-    private autoSpinActivated= false
+class DataController {
+    private static instance: DataController = undefined as any
+    private stripeSymbols: string[] = []
+    private filteredStripeSymbols: string[] = []
+    private numberOfLines = WIN_LINES_DATA.length
+    private selectedBetOption = 3
+    private balance = STARTING_BALANCE
+    private spinBtnState = SpinBtnState.Neutral
+    private autoSpinActivated = false
     public animationSequencer
 
-    constructor(){
-        this.animationSequencer= gsap.timeline()
+    private constructor() {
+        this.animationSequencer = gsap.timeline()
         this.initStripeSymbols()
         this.resetStripeSymbolFilter()
     }
 
-    public getStripeSymbols(filtered: boolean= true){
-        if (filtered)
-            return this.filteredStripeSymbols
+    public static getInstance() {
+        if (!DataController.instance) {
+            DataController.instance = new DataController()
+        }
+        return DataController.instance
+    }
+
+    public getStripeSymbols(filtered = true) {
+        if (filtered) return this.filteredStripeSymbols
         return this.stripeSymbols
     }
 
-    private initStripeSymbols(){
-        let syms: string[]= []
-        Object.values(Symbols).forEach(sym => syms.push(sym))
-        this.stripeSymbols= syms
+    private initStripeSymbols() {
+        const syms: string[] = []
+        Object.values(Symbols).forEach((sym) => syms.push(sym))
+        this.stripeSymbols = syms
     }
 
-    public filterStripeSymbols(... unwantedSymbols: string[]){
-        this.filteredStripeSymbols= this.filteredStripeSymbols.filter(symbol => {
-            return unwantedSymbols.find(unwanted => unwanted === symbol) === undefined
+    public filterStripeSymbols(...unwantedSymbols: string[]) {
+        this.filteredStripeSymbols = this.filteredStripeSymbols.filter((symbol) => {
+            return unwantedSymbols.find((unwanted) => unwanted === symbol) === undefined
         })
     }
 
-    public resetStripeSymbolFilter(){
-        this.filteredStripeSymbols= this.stripeSymbols
+    public resetStripeSymbolFilter() {
+        this.filteredStripeSymbols = this.stripeSymbols
     }
 
-    public getMaxNumberOfLines(){
+    public getMaxNumberOfLines() {
         return WIN_LINES_DATA.length
     }
 
-    public getNumberOfLines(){
+    public getNumberOfLines() {
         return this.numberOfLines
     }
 
-    public decrementNumberOfLines(){
-        if(this.numberOfLines > 1)
-            this.numberOfLines--
+    public decrementNumberOfLines() {
+        if (this.numberOfLines > 1) this.numberOfLines--
         return this.numberOfLines
     }
 
-    public incrementNumberOfLines(){
-        if(this.numberOfLines < WIN_LINES_DATA.length)
-            this.numberOfLines++
+    public incrementNumberOfLines() {
+        if (this.numberOfLines < WIN_LINES_DATA.length) this.numberOfLines++
         return this.numberOfLines
     }
 
-    public getBet(){
+    public getBet() {
         return BETS[this.selectedBetOption]
     }
 
-    public getTotalBet(){
+    public getTotalBet() {
         return this.numberOfLines * this.getBet()
     }
 
-    public decrementBet(){
-        if(this.selectedBetOption > 0)
-            this.selectedBetOption--
+    public decrementBet() {
+        if (this.selectedBetOption > 0) this.selectedBetOption--
         return BETS[this.selectedBetOption]
     }
 
-    public incrementBet(){
-        if(this.selectedBetOption < BETS.length - 1)
-            this.selectedBetOption++
+    public incrementBet() {
+        if (this.selectedBetOption < BETS.length - 1) this.selectedBetOption++
         return BETS[this.selectedBetOption]
     }
 
-    public getMaxBet(){
-        return BETS[BETS.length-1]
+    public getMaxBet() {
+        return BETS[BETS.length - 1]
     }
 
-    public getMinBet(){
+    public getMinBet() {
         return BETS[0]
     }
 
-    public getBalance(){
+    public getBalance() {
         return this.balance
     }
 
-    public setSpinBtnState(state: SpinBtnState){
-        this.spinBtnState= state
+    public setSpinBtnState(state: SpinBtnState) {
+        this.spinBtnState = state
     }
 
-    public getSpinBtnState(){
+    public getSpinBtnState() {
         return this.spinBtnState
     }
 
-    public reverseAutoSpinActivated(){
-        this.autoSpinActivated= !this.autoSpinActivated
+    public reverseAutoSpinActivated() {
+        this.autoSpinActivated = !this.autoSpinActivated
     }
 
-    public isAutoSpinActivated(){
+    public isAutoSpinActivated() {
         return this.autoSpinActivated
     }
 }
 
-let dataController: DataController= new DataController()
+const dataController: DataController = DataController.getInstance()
 export default dataController

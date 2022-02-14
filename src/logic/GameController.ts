@@ -10,10 +10,17 @@ import { Symbols } from '../constants/winLinesData'
 
 //Syncs processes of the game
 class GameController {
+    private static instance: GameController = undefined as any
     private app: Application = undefined as any
     private slotMachine: SlotMachine = undefined as any
 
-    constructor() {}
+    public static getInstance() {
+        if (!GameController.instance) {
+            GameController.instance = new GameController()
+        }
+
+        return GameController.instance
+    }
 
     public initGameController(_app: Application) {
         this.app = _app
@@ -145,5 +152,5 @@ class GameController {
     }
 }
 
-const gameController: GameController = new GameController()
+const gameController: GameController = GameController.getInstance()
 export default gameController
