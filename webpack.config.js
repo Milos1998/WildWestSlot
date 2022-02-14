@@ -1,5 +1,6 @@
 const path= require('path')
 const CopyPlugin= require('copy-webpack-plugin')
+const ESLintPlugin = require('eslint-webpack-plugin')
 
 module.exports= (env, argv) =>{
   return {
@@ -19,6 +20,7 @@ module.exports= (env, argv) =>{
           { from: 'src/assets', to: './assets' }
         ]
       }),
+      new ESLintPlugin()
     ],
     module: {
       rules:[
