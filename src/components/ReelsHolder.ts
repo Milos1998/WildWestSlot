@@ -49,11 +49,13 @@ export default class ReelsHolder extends Container {
             dataController.animationSequencer.add(this.reels[i].spinReel(), `<${REEL_SPIN_DELAY}`)
         }
 
-        dataController.animationSequencer.addLabel('endAnimation', REEL_SPIN_START_ROTATION + REEL_SPIN_MID_ROTATION)
+        dataController.animationSequencer.addLabel('reelsStopping', REEL_SPIN_START_ROTATION + REEL_SPIN_MID_ROTATION)
         dataController.animationSequencer.pause()
+        dataController.setSymbolCombination(this.getSymbolsCombination())
+        dataController.setStripes(this.reels.map((reel) => reel.getStripes()))
     }
 
-    public getSymbolsCombination() {
+    private getSymbolsCombination() {
         const symCombination = []
         for (let i = 0; i < this.reels.length; i++) {
             symCombination.push(this.reels[i].getSymbols())

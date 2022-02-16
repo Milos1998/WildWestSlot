@@ -51,22 +51,7 @@ export default class SpinButton extends Graphics {
         this.addChild(this.description)
 
         //add functionality
-        this.addListener('pointertap', () => {
-            switch (dataController.getSpinBtnState()) {
-                case SpinBtnState.Neutral: {
-                    gameController.spinManually()
-                    break
-                }
-                case SpinBtnState.Skip: {
-                    gameController.skipSpinAnimation()
-                    break
-                }
-                case SpinBtnState.Collect: {
-                    gameController.collectCash()
-                    break
-                }
-            }
-        })
+        this.addListener('pointertap', () => gameController.handleSpinButtonEvent())
         this.interactive = true
     }
 

@@ -1,4 +1,4 @@
-import { Sprite, Texture } from 'pixi.js'
+import { Graphics, Sprite, Texture } from 'pixi.js'
 import dataController from '../logic/DataController'
 
 export default class Stripe extends Sprite {
@@ -31,5 +31,20 @@ export default class Stripe extends Sprite {
 
     public getSymbol() {
         return this.symbol
+    }
+
+    public animateSprite(timeline: gsap.core.Timeline) {
+        const frame = new Graphics()
+        frame.beginFill(0xffffff)
+        frame.drawRect(0, 0, this.width, this.height)
+        frame.endFill()
+        this.addChild(frame)
+        timeline.to(frame, {
+            pixi: {
+                scale: 0.5
+            },
+            duration: 2,
+            yoyo: true
+        })
     }
 }

@@ -1,6 +1,8 @@
 import { gsap } from 'gsap'
+import Stripe from '../components/Stripe'
 import { BETS, SpinBtnState, STARTING_BALANCE } from '../constants/constants'
 import { Symbols, WIN_LINES_DATA } from '../constants/winLinesData'
+import { WinObject } from './WinCalculator'
 
 class DataController {
     private static instance: DataController | undefined = undefined
@@ -12,6 +14,10 @@ class DataController {
     private spinBtnState = SpinBtnState.Neutral
     private autoSpinActivated = false
     public animationSequencer
+    private symbolCombination: string[][] = []
+    private totalCashWin = 0
+    private wins: WinObject[] = []
+    private stripes: Stripe[][] = []
 
     private constructor() {
         this.animationSequencer = gsap.timeline()
@@ -95,6 +101,10 @@ class DataController {
         return this.balance
     }
 
+    public addToBalance(amount: number) {
+        this.balance += amount
+    }
+
     public setSpinBtnState(state: SpinBtnState) {
         this.spinBtnState = state
     }
@@ -109,6 +119,38 @@ class DataController {
 
     public isAutoSpinActivated() {
         return this.autoSpinActivated
+    }
+
+    public setSymbolCombination(symbolCombination: string[][]) {
+        this.symbolCombination = symbolCombination
+    }
+
+    public getSymbolCombination() {
+        return this.symbolCombination
+    }
+
+    public setTotalCashWin(totalCashWin: number) {
+        this.totalCashWin = totalCashWin
+    }
+
+    public getTotalCashWin() {
+        return this.totalCashWin
+    }
+
+    public setWins(wins: WinObject[]) {
+        this.wins = wins
+    }
+
+    public getWins() {
+        return this.wins
+    }
+
+    public setStripes(stripes: Stripe[][]) {
+        this.stripes = stripes
+    }
+
+    public getStripes() {
+        return this.stripes
     }
 }
 
