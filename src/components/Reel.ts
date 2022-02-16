@@ -76,20 +76,21 @@ export default class Reel extends Container {
                 duration: REEL_SPIN_END_ROTATION
             })
 
-        this.stripes.shift()
-        for (let i = STRIPES_PER_REEL; i < aditionalStripes; i++) {
-            this.stripes.pop()
-        }
+        this.stripes = this.stripes.slice(1, 4)
 
         return reelTimeline
     }
 
     public getSymbols() {
         const syms = []
-        for (let i = 0; i < this.stripes.length; i++) {
-            syms.push(this.stripes[i].getSymbol())
+        for (const stripe of this.stripes) {
+            syms.push(stripe.getSymbol())
         }
 
         return syms
+    }
+
+    public getStripes() {
+        return this.stripes
     }
 }
