@@ -1,4 +1,5 @@
 import { Graphics, Sprite, Texture } from 'pixi.js'
+import { STRIPE_SIZE } from '../constants/constants'
 import dataController from '../logic/DataController'
 
 export default class Stripe extends Sprite {
@@ -35,16 +36,22 @@ export default class Stripe extends Sprite {
 
     public animateSprite(timeline: gsap.core.Timeline) {
         const frame = new Graphics()
-        frame.beginFill(0xffffff)
-        frame.drawRect(0, 0, this.width, this.height)
+        frame.beginFill(0x0)
+        frame.drawRect(0, 0, STRIPE_SIZE, STRIPE_SIZE)
         frame.endFill()
+        frame.alpha = 0
         this.addChild(frame)
-        timeline.to(frame, {
-            pixi: {
-                scale: 0.5
+        timeline.to(
+            frame,
+            {
+                pixi: {
+                    alpha: 1
+                },
+                duration: 1,
+                repeat: 1,
+                yoyo: true
             },
-            duration: 2,
-            yoyo: true
-        })
+            0
+        )
     }
 }

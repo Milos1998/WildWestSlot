@@ -18,7 +18,5 @@ export const ASSETS = [
     { name: 'minus', url: './assets/minus.png' },
     { name: 'skip-animation', url: './assets/skip-animation.png' },
     { name: 'spin', url: './assets/spin.png' },
-    { name: 'auto-spin', url: './assets/auto-spin.png' },
-    { name: 'emitterSettings', url: './assets/emitter.json' },
-    { name: 'sparks', url: './assets/sparks.png' }
+    { name: 'auto-spin', url: './assets/auto-spin.png' }
 ]

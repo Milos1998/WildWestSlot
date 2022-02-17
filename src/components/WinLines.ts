@@ -73,8 +73,14 @@ export default class WinLines extends Container {
         dataController.animationSequencer.addLabel('animateWinSymbols')
 
         for (const win of wins) {
-            const timeline = gsap.timeline({ paused: true })
-            if (win.winSymbol !== Symbols.Reward1000) this.displayLine(win.winLine)
+            const timeline = gsap.timeline()
+            timeline.call(
+                () => {
+                    if (win.winSymbol !== Symbols.Reward1000) this.displayLine(win.winLine)
+                },
+                undefined,
+                0
+            )
 
             for (let reelNum = 0; reelNum <= win.numberOfMatches; reelNum++) {
                 this.maskReel(reelNum)
@@ -89,10 +95,13 @@ export default class WinLines extends Container {
                 timeline.duration()
             )
 
+            console.log(timeline.duration())
             dataController.animationSequencer.add(timeline)
         }
         console.log(dataController.animationSequencer.getChildren())
 
+        dataController.animationSequencer.repeat(-1)
+        dataController.animationSequencer.pause()
         dataController.animationSequencer.addLabel('endAnimateWinSymbols', dataController.animationSequencer.duration())
     }
 }
