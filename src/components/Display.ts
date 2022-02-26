@@ -31,6 +31,7 @@ export default class Display extends Graphics {
 
     private wasMoreActive = false
     private wasLessActive = false
+    private wasDisabledBefore = false
 
     constructor(
         x: number,
@@ -92,15 +93,17 @@ export default class Display extends Graphics {
     }
 
     public disableSelector() {
-        this.wasLessActive = this.lessButton.interactive
+        if (!this.wasDisabledBefore) this.wasLessActive = this.lessButton.interactive
         this.disableLessButton()
-        this.wasMoreActive = this.moreButton.interactive
+        if (!this.wasDisabledBefore) this.wasMoreActive = this.moreButton.interactive
         this.disableMoreButton()
+        this.wasDisabledBefore = true
     }
 
     public enableSelector() {
         if (this.wasLessActive) this.enableLessButton()
         if (this.wasMoreActive) this.enableMoreButton()
+        this.wasDisabledBefore = false
     }
 
     private initSelectorButtons() {
