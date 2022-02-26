@@ -42,7 +42,20 @@ export default class ReelsHolder extends Container {
         }
     }
 
-    public spinReels() {
+    public async spinReels(onReelsStopping: () => void) {
+        this.queueSpinReelsAnimation()
+
+        dataController.animationSequencer.call(onReelsStopping, undefined, 'reelsStopping')
+        return dataController.animationSequencer.play('spinReels').then(() => {
+            dataController.animationSequencer.clear()
+        })
+    }
+
+    public slamStopAnimation() {
+        dataController.animationSequencer.seek('reelsStopping', false)
+    }
+
+    private queueSpinReelsAnimation() {
         dataController.animationSequencer.addLabel('spinReels')
 
         for (let i = 0; i < this.reels.length; i++) {
@@ -52,7 +65,6 @@ export default class ReelsHolder extends Container {
         dataController.animationSequencer.addLabel('reelsStopping', REEL_SPIN_START_ROTATION + REEL_SPIN_MID_ROTATION)
         dataController.animationSequencer.pause()
         dataController.setSymbolCombination(this.getSymbolsCombination())
-        dataController.setStripes(this.reels.map((reel) => reel.getStripes()))
     }
 
     private getSymbolsCombination() {
@@ -62,5 +74,9 @@ export default class ReelsHolder extends Container {
         }
 
         return symCombination
+    }
+
+    public getStripes() {
+        return this.reels.map((reel) => reel.getStripes())
     }
 }

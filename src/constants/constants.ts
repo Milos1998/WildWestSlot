@@ -53,6 +53,7 @@ export const AUTO_SPIN_BUTTON_OFF_INACTIVE_TINT = 0x888888
 export const BUTTON_DECORATION_ACTIVE_COLOR = BUTTONS_FRAME_COLOR
 export const BUTTON_DECORATION_INACTIVE_COLOR = 0x845d01
 export const WIN_LINE_THICKNESS = 6
+export const STRIPE_FRAME_TO_SYMBOL_RATIO = 0.84
 
 //Data starting state
 export const BETS = [0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 3, 4, 5]
@@ -70,4 +71,10 @@ export enum SpinBtnState {
     Skip,
     Skipping,
     Collect
+}
+
+export enum AutoSpinBtnState {
+    OffDisabled,
+    OffEnabled,
+    On
 }

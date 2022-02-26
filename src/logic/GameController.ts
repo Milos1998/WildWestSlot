@@ -7,7 +7,7 @@ import { gsap } from 'gsap'
 import { PixiPlugin } from 'gsap/PixiPlugin'
 import winCalculator from './WinCalculator'
 import { Symbols } from '../constants/winLinesData'
-import { SpinBtnState } from '../constants/constants'
+import { AutoSpinBtnState, SpinBtnState } from '../constants/constants'
 
 //Syncs processes of the game
 class GameController {
@@ -94,9 +94,41 @@ class GameController {
         this.slotMachine.winLines.hideAllLines()
     }
 
-    public spinAutomatiaclly() {
-        //TODO  refactore spin logic
-        dataController.reverseAutoSpinActivated()
+    public async spinAutomatiaclly() {
+        this.slotMachine.autoSpinButton.setStateOn()
+
+        while (dataController.getAutoSpinBtnState() === AutoSpinBtnState.On) {
+            await this.spin()
+        }
+
+        this.slotMachine.autoSpinButton.setStateOffEnabled()
+        this.slotMachine.spinButton.setStateNeutral()
+        this.slotMachine.betSelector.enableSelector()
+        this.slotMachine.linesSelector.enableSelector()
+    }
+
+    public handleAutoSpinButtonEvent() {
+        switch (dataController.getAutoSpinBtnState()) {
+            case AutoSpinBtnState.On: {
+                this.slotMachine.autoSpinButton.setStateOffDisabled()
+                break
+            }
+            case AutoSpinBtnState.OffEnabled: {
+                this.spinAutomatiaclly()
+                break
+            }
+        }
+    }
+
+    public async spinManually() {
+        this.slotMachine.autoSpinButton.setStateOffDisabled()
+
+        await this.spin()
+
+        this.slotMachine.autoSpinButton.setStateOffEnabled()
+        this.slotMachine.spinButton.setStateNeutral()
+        this.slotMachine.betSelector.enableSelector()
+        this.slotMachine.linesSelector.enableSelector()
     }
 
     public handleSpinButtonEvent() {
@@ -106,7 +138,7 @@ class GameController {
                 break
             }
             case SpinBtnState.Skip: {
-                this.skipSpinAnimation()
+                this.slotMachine.reelsHolder.slamStopAnimation()
                 break
             }
             case SpinBtnState.Collect: {
@@ -116,55 +148,45 @@ class GameController {
         }
     }
 
-    public skipSpinAnimation() {
-        dataController.animationSequencer.seek('reelsStopping', false)
-    }
-
     public collectCash() {
         dataController.addToBalance(dataController.getTotalCashWin())
         this.slotMachine.balance.setDisplayValue(dataController.getBalance())
-        dataController.animationSequencer.seek('endAnimateWinSymbols', false)
+        this.slotMachine.winLines.stopWinningLinesAnimation()
     }
 
-    public async spinManually() {
-        this.slotMachine.autoSpinButton.setStateOffDisabled()
+    private async spin() {
         this.slotMachine.spinButton.setStateSkip()
         this.slotMachine.betSelector.disableSelector()
         this.slotMachine.linesSelector.disableSelector()
         this.slotMachine.winLines.hideAllLines()
 
-        this.slotMachine.reelsHolder.spinReels()
-        dataController.animationSequencer.call(
-            () => {
-                this.slotMachine.spinButton.setStateDisabledSkip()
-            },
-            undefined,
-            'reelsStopping'
-        )
-        await dataController.animationSequencer.play('spinReels').then(() => {
-            dataController.animationSequencer.clear()
+        this.takeMoney(dataController.getTotalBet())
+
+        await this.slotMachine.reelsHolder.spinReels(() => {
+            this.slotMachine.spinButton.setStateDisabledSkip()
         })
 
         winCalculator.calculateWin()
-        console.log(dataController.getWins())
         if (dataController.getTotalCashWin()) {
             this.slotMachine.spinButton.setStateCollect()
             this.slotMachine.cashTray.setDisplayValue(dataController.getTotalCashWin())
-            this.slotMachine.winLines.animateWinningLines()
-            await dataController.animationSequencer.play('animateWinSymbols').then(() => {
-                dataController.animationSequencer.clear()
-            })
+            await this.slotMachine.winLines.startWinningLinesAnimation(this.slotMachine.reelsHolder.getStripes())
         }
 
         this.slotMachine.cashTray.setDisplayValue('')
-        this.slotMachine.autoSpinButton.setStateOffEnabled()
-        this.slotMachine.spinButton.setStateNeutral()
-        this.slotMachine.betSelector.enableSelector()
-        this.slotMachine.linesSelector.enableSelector()
     }
 
-    private spin() {
-        console.log('spin')
+    private takeMoney(amount: number) {
+        if (dataController.getBalance() < amount) {
+            this.gameOver()
+        }
+
+        dataController.addToBalance(-amount)
+        this.slotMachine.balance.setDisplayValue(dataController.getBalance())
+    }
+
+    private gameOver() {
+        //TODO
     }
 }
 

@@ -77,7 +77,7 @@ export default class SpinButton extends Graphics {
         this.image.tint = BUTTON_DECORATION_ACTIVE_COLOR
         this.image.alpha = 1
 
-        this.description.text = 'SKIP'
+        this.description.text = 'SLAM'
         this.description.tint = BUTTON_DECORATION_ACTIVE_COLOR
         this.description.y = this.height - (this.description.height * 2) / 3 - BUTTONS_FRAME_THICKNESS
 
@@ -92,7 +92,7 @@ export default class SpinButton extends Graphics {
         this.image.tint = BUTTON_DECORATION_INACTIVE_COLOR
         this.image.alpha = 1
 
-        this.description.text = 'SKIP'
+        this.description.text = 'SLAM'
         this.description.tint = BUTTON_DECORATION_INACTIVE_COLOR
         this.description.y = this.height - (this.description.height * 2) / 3 - BUTTONS_FRAME_THICKNESS
 

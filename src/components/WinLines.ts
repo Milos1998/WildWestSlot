@@ -4,20 +4,22 @@ import { LINE_COLORS, LINE_OFFSETS, WIN_LINES_DATA } from '../constants/winLines
 import dataController from '../logic/DataController'
 import { Symbols } from '../constants/winLinesData'
 import gsap from 'gsap'
+import Stripe from './Stripe'
 
 export default class WinLines extends Container {
     private lines: Graphics[] = []
+    private myWidth = 0
+    private myHeight = 0
+
     constructor(x: number, y: number, width: number, height: number) {
         super()
 
         this.x = x - REELS_HOLDER_FRAME_THICKNESS
         this.y = y
-        this.width = width
-        this.height = height
+        this.myWidth = width
+        this.myHeight = height
 
-        for (let i = 0; i < WIN_LINES_DATA.length; i++) {
-            const wld = WIN_LINES_DATA[i]
-
+        for (const wld of WIN_LINES_DATA) {
             const line = new Graphics()
             this.lines.push(line)
             this.addChild(line)
@@ -61,41 +63,59 @@ export default class WinLines extends Container {
         this.lines[lineNum].visible = false
     }
 
-    private maskReel(reelPosition: number) {
-        //
-        reelPosition
+    public async startWinningLinesAnimation(stripes: Stripe[][]) {
+        this.queueWinningLinesAnimation(stripes)
+
+        return dataController.animationSequencer.play('animateWinSymbols').then(() => {
+            dataController.animationSequencer.clear()
+        })
     }
 
-    public animateWinningLines() {
-        const wins = dataController.getWins().sort((w1, w2) => w1.winAmount - w2.winAmount)
-        const stripes = dataController.getStripes()
+    public stopWinningLinesAnimation() {
+        dataController.animationSequencer.repeat(0)
+        dataController.animationSequencer.seek('endAnimateWinSymbols', false)
+    }
+
+    private queueWinningLinesAnimation(stripes: Stripe[][]) {
+        const wins = [...dataController.getWins()].sort((w1, w2) => w2.winAmount - w1.winAmount)
 
         dataController.animationSequencer.addLabel('animateWinSymbols')
 
         for (const win of wins) {
             const timeline = gsap.timeline()
+            const mask = new Graphics()
             timeline.call(
                 () => {
-                    if (win.winSymbol !== Symbols.Reward1000) this.displayLine(win.winLine)
+                    if (win.winSymbol !== Symbols.Reward1000) {
+                        this.displayLine(win.winLine)
+                        this.lines[win.winLine].mask = mask
+                        this.lines[win.winLine].addChild(mask)
+                    }
                 },
                 undefined,
                 0
             )
 
+            mask.x = REELS_HOLDER_FRAME_THICKNESS
+            mask.beginFill(0x0, 1)
+            mask.drawRect(0, 0, this.myWidth, this.myHeight)
+            mask.endFill()
+            //get all the symbols that are part of winning line and animate them on same timeline.
             for (let reelNum = 0; reelNum <= win.numberOfMatches; reelNum++) {
-                this.maskReel(reelNum)
                 const positionOnReel = WIN_LINES_DATA[win.winLine].winPositions[reelNum]
-                stripes[reelNum][positionOnReel].animateSprite(timeline)
+                stripes[reelNum][positionOnReel].animateSprite(timeline, this.lines[win.winLine].line.color, mask)
             }
+
             timeline.call(
                 () => {
                     this.hideLine(win.winLine)
+                    this.lines[win.winLine].mask = null
+                    this.lines[win.winLine].removeChild(mask)
                 },
                 undefined,
                 timeline.duration()
             )
 
-            console.log(timeline.duration())
             dataController.animationSequencer.add(timeline)
         }
         console.log(dataController.animationSequencer.getChildren())

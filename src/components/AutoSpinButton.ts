@@ -1,5 +1,6 @@
 import { Graphics, Sprite, TextStyle, Text } from 'pixi.js'
 import {
+    AutoSpinBtnState,
     AUTO_SPIN_BUTTON_OFF_COLOR,
     AUTO_SPIN_BUTTON_OFF_INACTIVE_TINT,
     AUTO_SPIN_BUTTON_ON_COLOR,
@@ -55,8 +56,7 @@ export default class AutoSpinButton extends Graphics {
         //functionality
         dataController
         this.on('pointertap', () => {
-            gameController.spinAutomatiaclly()
-            console.log('is AS')
+            gameController.handleAutoSpinButtonEvent()
         })
         this.interactive = true
     }
@@ -71,6 +71,7 @@ export default class AutoSpinButton extends Graphics {
         this.tint = 0xffffff
 
         this.interactive = true
+        dataController.setAutoSpinBtnState(AutoSpinBtnState.On)
     }
 
     public setStateOffEnabled() {
@@ -83,6 +84,7 @@ export default class AutoSpinButton extends Graphics {
         this.tint = 0xffffff
 
         this.interactive = true
+        dataController.setAutoSpinBtnState(AutoSpinBtnState.OffEnabled)
     }
 
     public setStateOffDisabled() {
@@ -95,6 +97,7 @@ export default class AutoSpinButton extends Graphics {
         this.tint = AUTO_SPIN_BUTTON_OFF_INACTIVE_TINT
 
         this.interactive = false
+        dataController.setAutoSpinBtnState(AutoSpinBtnState.OffDisabled)
     }
 
     private reDrawRec(fillColor: number) {

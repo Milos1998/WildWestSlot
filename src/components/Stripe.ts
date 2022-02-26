@@ -1,5 +1,5 @@
 import { Graphics, Sprite, Texture } from 'pixi.js'
-import { STRIPE_SIZE } from '../constants/constants'
+import { STRIPE_FRAME_TO_SYMBOL_RATIO, STRIPE_SIZE } from '../constants/constants'
 import dataController from '../logic/DataController'
 
 export default class Stripe extends Sprite {
@@ -8,11 +8,11 @@ export default class Stripe extends Sprite {
     constructor(x: number, y: number, width: number, height: number, textureSource = '') {
         super()
 
+        this.anchor.set(0.5, 0.5)
         this.x = x
         this.y = y
         this.width = width
         this.height = height
-        this.visible = true
 
         this.setSymbol(textureSource)
     }
@@ -34,24 +34,40 @@ export default class Stripe extends Sprite {
         return this.symbol
     }
 
-    public animateSprite(timeline: gsap.core.Timeline) {
+    public animateSprite(timeline: gsap.core.Timeline, color: number, mask: Graphics) {
         const frame = new Graphics()
-        frame.beginFill(0x0)
-        frame.drawRect(0, 0, STRIPE_SIZE, STRIPE_SIZE)
+        frame.pivot.set(STRIPE_SIZE / 2)
+        frame.beginFill(color)
+        frame.drawRect(this.x, this.y, STRIPE_SIZE, STRIPE_SIZE)
         frame.endFill()
+
+        frame.beginHole()
+        const holeSize = STRIPE_SIZE * STRIPE_FRAME_TO_SYMBOL_RATIO
+        const holeXY = (STRIPE_SIZE - holeSize) / 2
+        frame.drawRect(this.x + holeXY, this.y + holeXY, holeSize, holeSize)
+        frame.endHole()
+
         frame.alpha = 0
-        this.addChild(frame)
-        timeline.to(
-            frame,
-            {
-                pixi: {
-                    alpha: 1
-                },
-                duration: 1,
-                repeat: 1,
-                yoyo: true
+        this.parent.addChild(frame) //memory leak
+
+        mask.beginHole()
+        mask.drawRect(this.parent.x, this.y - this.width / 2, this.width, this.height)
+        mask.endHole()
+
+        timeline.call(
+            () => {
+                frame.alpha = 1
             },
+            undefined,
             0
+        )
+        timeline.to(this, { pixi: { scale: 0.9 }, duration: 1, repeat: 1, yoyo: true }, 0)
+        timeline.call(
+            () => {
+                frame.alpha = 0
+            },
+            undefined,
+            timeline.duration()
         )
     }
 }
