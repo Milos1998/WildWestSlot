@@ -7,7 +7,7 @@ import { gsap } from 'gsap'
 import { PixiPlugin } from 'gsap/PixiPlugin'
 import winCalculator from './WinCalculator'
 import { Symbols } from '../constants/winLinesData'
-import { AutoSpinBtnState, SpinBtnState } from '../constants/constants'
+import { AutoSpinBtnState, SpinBtnState } from '../constants'
 
 //Syncs processes of the game
 class GameController {
@@ -149,7 +149,7 @@ class GameController {
     }
 
     public collectCash() {
-        dataController.addToBalance(dataController.getTotalCashWin())
+        dataController.updateBalance(dataController.getTotalCashWin())
         this.slotMachine.balance.setDisplayValue(dataController.getBalance())
         this.slotMachine.winLines.stopWinningLinesAnimation()
     }
@@ -181,7 +181,7 @@ class GameController {
             this.gameOver()
         }
 
-        dataController.addToBalance(-amount)
+        dataController.updateBalance(-amount)
         this.slotMachine.balance.setDisplayValue(dataController.getBalance())
     }
 

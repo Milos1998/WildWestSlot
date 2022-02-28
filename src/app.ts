@@ -1,5 +1,5 @@
 import { Application } from 'pixi.js'
-import { APP_BACKGROUND_COLOR, APP_HEIGHT, APP_WIDTH } from './constants/constants'
+import { APP_BACKGROUND_COLOR, APP_HEIGHT, APP_WIDTH } from './constants'
 import gameController from './logic/GameController'
 
 const app = new Application({

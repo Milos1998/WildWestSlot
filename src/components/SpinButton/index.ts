@@ -8,9 +8,9 @@ import {
     DISPLAYS_FONT_FAMILY,
     SPIN_BUTTON_ACTIVE_COLOR,
     SPIN_BUTTON_INACTIVE_TINT
-} from '../constants/constants'
-import dataController from '../logic/DataController'
-import gameController from '../logic/GameController'
+} from '../../constants'
+import dataController from '../../logic/DataController'
+import gameController from '../../logic/GameController'
 
 const descriptionStyle = new TextStyle({
     fill: 0xffffff,

@@ -6,9 +6,9 @@ import {
     REEL_SPIN_MID_ROTATION,
     REEL_SPIN_START_ROTATION,
     STRIPE_SIZE
-} from '../constants/constants'
-import dataController from '../logic/DataController'
-import Reel from './Reel'
+} from '../../constants'
+import dataController from '../../logic/DataController'
+import Reel from '../Reel'
 
 export default class ReelsHolder extends Container {
     private reels: Reel[]
@@ -47,7 +47,7 @@ export default class ReelsHolder extends Container {
 
         dataController.animationSequencer.call(onReelsStopping, undefined, 'reelsStopping')
         return dataController.animationSequencer.play('spinReels').then(() => {
-            dataController.animationSequencer.clear()
+            dataController.resetAnimationSequencer()
         })
     }
 

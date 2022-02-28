@@ -1,4 +1,4 @@
-import { STRIPE_SIZE } from './constants'
+import { STRIPE_SIZE } from './'
 
 export const WIN_LINES_DATA = [
     {

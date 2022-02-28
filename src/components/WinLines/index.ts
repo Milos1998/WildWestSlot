@@ -1,10 +1,10 @@
 import { Container, Graphics } from 'pixi.js'
-import { REELS_HOLDER_FRAME_THICKNESS, STRIPE_SIZE, WIN_LINE_THICKNESS } from '../constants/constants'
-import { LINE_COLORS, LINE_OFFSETS, WIN_LINES_DATA } from '../constants/winLinesData'
-import dataController from '../logic/DataController'
-import { Symbols } from '../constants/winLinesData'
+import { REELS_HOLDER_FRAME_THICKNESS, STRIPE_SIZE, WIN_LINE_THICKNESS } from '../../constants'
+import { LINE_COLORS, LINE_OFFSETS, WIN_LINES_DATA } from '../../constants/winLinesData'
+import dataController from '../../logic/DataController'
+import { Symbols } from '../../constants/winLinesData'
 import gsap from 'gsap'
-import Stripe from './Stripe'
+import Stripe from '../Stripe'
 
 export default class WinLines extends Container {
     private lines: Graphics[] = []
@@ -67,13 +67,14 @@ export default class WinLines extends Container {
         this.queueWinningLinesAnimation(stripes)
 
         return dataController.animationSequencer.play('animateWinSymbols').then(() => {
-            dataController.animationSequencer.clear()
+            dataController.resetAnimationSequencer()
         })
     }
 
     public stopWinningLinesAnimation() {
         dataController.animationSequencer.repeat(0)
         dataController.animationSequencer.seek('endAnimateWinSymbols', false)
+        //obrisi sve sto curi memoriju
     }
 
     private queueWinningLinesAnimation(stripes: Stripe[][]) {
@@ -103,7 +104,7 @@ export default class WinLines extends Container {
             //get all the symbols that are part of winning line and animate them on same timeline.
             for (let reelNum = 0; reelNum <= win.numberOfMatches; reelNum++) {
                 const positionOnReel = WIN_LINES_DATA[win.winLine].winPositions[reelNum]
-                stripes[reelNum][positionOnReel].animateSprite(timeline, this.lines[win.winLine].line.color, mask)
+                stripes[reelNum][positionOnReel].animateSprite(timeline, this.lines[win.winLine], mask)
             }
 
             timeline.call(
@@ -118,7 +119,6 @@ export default class WinLines extends Container {
 
             dataController.animationSequencer.add(timeline)
         }
-        console.log(dataController.animationSequencer.getChildren())
 
         dataController.animationSequencer.repeat(-1)
         dataController.animationSequencer.pause()

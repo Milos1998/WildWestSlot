@@ -1,5 +1,5 @@
 import { gsap } from 'gsap'
-import { AutoSpinBtnState, BETS, SpinBtnState, STARTING_BALANCE } from '../constants/constants'
+import { AutoSpinBtnState, BETS, SpinBtnState, STARTING_BALANCE } from '../constants'
 import { Symbols, WIN_LINES_DATA } from '../constants/winLinesData'
 import { WinObject } from './WinCalculator'
 
@@ -51,6 +51,12 @@ class DataController {
         this.filteredStripeSymbols = this.stripeSymbols
     }
 
+    public resetAnimationSequencer() {
+        this.animationSequencer.invalidate() //TODO
+        this.animationSequencer.kill()
+        this.animationSequencer = gsap.timeline()
+    }
+
     public getMaxNumberOfLines() {
         return WIN_LINES_DATA.length
     }
@@ -99,7 +105,7 @@ class DataController {
         return this.balance
     }
 
-    public addToBalance(amount: number) {
+    public updateBalance(amount: number) {
         this.balance += amount
     }
 

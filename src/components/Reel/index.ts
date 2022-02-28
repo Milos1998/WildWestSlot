@@ -6,8 +6,8 @@ import {
     REEL_SPIN_START_ROTATION,
     STRIPES_PER_REEL,
     STRIPE_SIZE
-} from '../constants/constants'
-import Stripe from './Stripe'
+} from '../../constants'
+import Stripe from '../Stripe'
 
 export default class Reel extends Container {
     private stripes: Stripe[]
@@ -28,9 +28,7 @@ export default class Reel extends Container {
         this.stripes = []
 
         for (let i = 0; i < STRIPES_PER_REEL; i++) {
-            this.stripes.push(
-                new Stripe(0 + STRIPE_SIZE / 2, this.y + i * STRIPE_SIZE + STRIPE_SIZE / 2, STRIPE_SIZE, STRIPE_SIZE)
-            )
+            this.stripes.push(new Stripe(0, this.y + i * STRIPE_SIZE, STRIPE_SIZE, STRIPE_SIZE))
             this.addChild(this.stripes[i])
         }
     }

@@ -6,7 +6,7 @@ import {
     DISPLAYS_FONT_FAMILY,
     DISPLAYS_FONT_FILL,
     DISPLAYS_DISABLED_BUTTON_COLOR
-} from '../constants/constants'
+} from '../../constants'
 
 const descriptionStyle = new TextStyle({
     fill: DISPLAYS_FONT_FILL,

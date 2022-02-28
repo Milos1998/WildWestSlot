@@ -9,9 +9,9 @@ import {
     BUTTON_DECORATION_ACTIVE_COLOR,
     BUTTON_DECORATION_INACTIVE_COLOR,
     DISPLAYS_FONT_FAMILY
-} from '../constants/constants'
-import dataController from '../logic/DataController'
-import gameController from '../logic/GameController'
+} from '../../constants'
+import dataController from '../../logic/DataController'
+import gameController from '../../logic/GameController'
 
 const descriptionStyle = new TextStyle({
     fill: 0xffffff,

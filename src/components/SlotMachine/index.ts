@@ -17,14 +17,14 @@ import {
     SPIN_BUTTON_X,
     TOTAL_BET_DISPLAY_Y,
     AUTO_SPIN_BUTTON_X
-} from '../constants/constants'
-import dataController from '../logic/DataController'
-import gameController from '../logic/GameController'
-import AutoSpinButton from './AutoSpinButton'
-import Display from './Display'
-import ReelsHolder from './ReelsHolder'
-import SpinButton from './SpinButton'
-import WinLines from './WinLines'
+} from '../../constants'
+import dataController from '../../logic/DataController'
+import gameController from '../../logic/GameController'
+import AutoSpinButton from '../AutoSpinButton'
+import Display from '../Display'
+import ReelsHolder from '../ReelsHolder'
+import SpinButton from '../SpinButton'
+import WinLines from '../WinLines'
 
 export default class SlotMachine extends Container {
     private machineDecoration: Sprite
