@@ -52,7 +52,6 @@ class DataController {
     }
 
     public resetAnimationSequencer() {
-        this.animationSequencer.invalidate() //TODO
         this.animationSequencer.kill()
         this.animationSequencer = gsap.timeline()
     }

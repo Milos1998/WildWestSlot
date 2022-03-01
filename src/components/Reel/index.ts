@@ -11,6 +11,7 @@ import Stripe from '../Stripe'
 
 export default class Reel extends Container {
     private stripes: Stripe[]
+    private forCleanup: Stripe[] = []
 
     constructor(x: number, y: number) {
         super()
@@ -34,8 +35,8 @@ export default class Reel extends Container {
     }
 
     public makeAllStripesIdentical(symbol: string) {
-        for (let i = 0; i < this.stripes.length; i++) {
-            this.stripes[i].setSymbol(symbol)
+        for (const stripe of this.stripes) {
+            stripe.setSymbol(symbol)
         }
     }
 
@@ -46,7 +47,7 @@ export default class Reel extends Container {
         this.addChild(str)
     }
 
-    public spinReel() {
+    public queueReelAnimation() {
         const reelTimeline = gsap.timeline()
 
         const midSpinRotations = 40
@@ -76,9 +77,14 @@ export default class Reel extends Container {
                 duration: REEL_SPIN_END_ROTATION
             })
 
-        this.stripes = this.stripes.slice(1, 4)
+        this.forCleanup = [this.stripes.shift() as Stripe]
+        this.forCleanup = [...this.stripes.splice(STRIPES_PER_REEL)]
 
         return reelTimeline
+    }
+
+    public animationCleanup() {
+        for (const stripe of this.forCleanup) stripe.destroy()
     }
 
     public getSymbols() {
