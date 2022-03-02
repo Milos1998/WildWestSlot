@@ -5,7 +5,7 @@ import { StripeAnimator } from './StripeAnimator'
 export default class Stripe extends Container {
     private symbol = ''
     public sprite: Sprite = new Sprite()
-    private stripeAnimator: StripeAnimator | null = null
+    public stripeAnimator: StripeAnimator | null = null
 
     constructor(x: number, y: number, width: number, height: number, textureSource?: string) {
         super()
@@ -40,7 +40,11 @@ export default class Stripe extends Container {
         return this.symbol
     }
 
-    public animateSprite(timeline: gsap.core.Timeline, line: Graphics, mask: Graphics) {
-        this.stripeAnimator = new StripeAnimator(this, timeline, line, mask)
+    public animateSprite(timeline: gsap.core.Timeline, lineColor: number, mask: Graphics) {
+        this.stripeAnimator = new StripeAnimator(this, timeline, lineColor, mask)
+    }
+
+    public displayAmount(amount: number) {
+        this.stripeAnimator?.displayAmount(amount)
     }
 }

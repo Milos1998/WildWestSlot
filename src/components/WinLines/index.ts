@@ -104,7 +104,9 @@ export default class WinLines extends Container {
             //get all the symbols that are part of winning line and animate them on same timeline.
             for (let reelNum = 0; reelNum <= win.numberOfMatches; reelNum++) {
                 const positionOnReel = WIN_LINES_DATA[win.winLine].winPositions[reelNum]
-                stripes[reelNum][positionOnReel].animateSprite(timeline, this.lines[win.winLine], mask)
+                stripes[reelNum][positionOnReel].animateSprite(timeline, this.lines[win.winLine].line.color, mask)
+                if (reelNum === win.numberOfMatches || win.winSymbol === Symbols.Reward1000)
+                    stripes[reelNum][positionOnReel].displayAmount(win.winAmount)
             }
 
             timeline.call(
