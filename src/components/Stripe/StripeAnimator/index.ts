@@ -7,7 +7,6 @@ import {
     DISPLAYS_FONT_FAMILY,
     DISPLAYS_FONT_FILL
 } from '../../../constants'
-import { Symbols } from '../../../constants/winLinesData'
 
 const amountStyle = new TextStyle({
     fill: DISPLAYS_FONT_FILL,
@@ -19,11 +18,11 @@ export class StripeAnimator {
     private frame: Graphics
     private stripe: Stripe
 
-    constructor(stripe: Stripe, timeline: gsap.core.Timeline, lineColor: number, mask: Graphics) {
+    constructor(stripe: Stripe, timeline: gsap.core.Timeline, lineColor?: number, mask?: Graphics) {
         this.frame = new Graphics()
         this.stripe = stripe
 
-        this.cropWinLineMask(mask)
+        if (mask) this.cropWinLineMask(mask)
         this.makeFrame(lineColor)
         this.animateStripe(timeline)
     }
@@ -34,8 +33,8 @@ export class StripeAnimator {
         mask.endHole()
     }
 
-    private makeFrame(lineColor: number) {
-        if (this.stripe.getSymbol() === Symbols.Reward1000) lineColor = SPECIAL_SYMBOL_FRAME_COLOR
+    private makeFrame(lineColor?: number) {
+        if (!lineColor) lineColor = SPECIAL_SYMBOL_FRAME_COLOR
         this.frame.beginFill(lineColor)
         this.frame.drawRect(0, 0, this.stripe.width, this.stripe.height)
         this.frame.endFill()

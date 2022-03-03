@@ -40,7 +40,7 @@ export default class Stripe extends Container {
         return this.symbol
     }
 
-    public animateSprite(timeline: gsap.core.Timeline, lineColor: number, mask: Graphics) {
+    public animateSprite(timeline: gsap.core.Timeline, lineColor?: number, mask?: Graphics) {
         this.stripeAnimator = new StripeAnimator(this, timeline, lineColor, mask)
     }
 

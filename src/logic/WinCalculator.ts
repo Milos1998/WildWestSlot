@@ -1,3 +1,4 @@
+import { REELS_PER_REEL_HOLDER } from '../constants'
 import { PAYTABLE, Symbols, WIN_LINES_DATA } from '../constants/winLinesData'
 import dataController from './DataController'
 
@@ -9,48 +10,96 @@ export class WinObject {
 }
 
 class WinCalculator {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private symOfCurrentLine: string = undefined as any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private previousSym: string = undefined as any
+    private static instance: WinCalculator | undefined = undefined
     private totalWinAmount = 0
-    //TODO: refactor whole class - maybe split it to calculate every property of winObject in different method
+    private wins: WinObject[] = []
+
+    public static getInstance() {
+        if (!WinCalculator.instance) WinCalculator.instance = new WinCalculator()
+
+        return WinCalculator.instance
+    }
 
     public calculateWin() {
-        const symbolCombination = dataController.getSymbolCombination()
-        const wins = []
+        this.wins = []
         this.totalWinAmount = 0
-        for (let i = 0; i < dataController.getNumberOfLines(); i++) {
-            const wp = WIN_LINES_DATA[i].winPositions
-            this.symOfCurrentLine = symbolCombination[0][wp[0]]
-            this.previousSym = symbolCombination[0][wp[0]]
+
+        this.calculateMatches()
+        this.calculateSpecials()
+        this.calculateWinAmounts()
+
+        dataController.setWins(this.wins)
+        dataController.setTotalCashWin(this.totalWinAmount)
+    }
+
+    private calculateMatches() {
+        const symbolCombination = dataController.getSymbolCombination()
+        for (let currentLine = 0; currentLine < dataController.getNumberOfLines(); currentLine++) {
+            const wp = WIN_LINES_DATA[currentLine].winPositions
+
+            const first = symbolCombination[0][wp[0]]
+            if (first === Symbols.Reward1000) continue
 
             const win: WinObject = new WinObject()
-            win.winSymbol = this.symOfCurrentLine
-            win.winLine = i
+            win.winSymbol = first
+            win.winLine = currentLine
 
-            for (let j = 1; j < wp.length; j++) {
-                if (this.isMatching(symbolCombination[j][wp[j]])) {
-                    if (this.symOfCurrentLine !== this.previousSym) {
-                        this.symOfCurrentLine = this.previousSym
-                        wins.push({ ...win })
-                        win.winSymbol = this.previousSym
-                    }
+            for (let currentReel = 1; currentReel < REELS_PER_REEL_HOLDER; currentReel++) {
+                if (this.isMatching(symbolCombination[currentReel][wp[currentReel]], win)) {
                     win.numberOfMatches++
                 } else {
                     break
                 }
             }
-
-            wins.push(win)
+            this.wins.push(win)
         }
 
-        dataController.setWins(this.calculateWinAmounts(wins.filter((win) => win.numberOfMatches > 0)))
-        dataController.setTotalCashWin(this.totalWinAmount)
+        this.wins = this.wins.filter((win) => win.numberOfMatches > 0)
     }
 
-    private calculateWinAmounts(wins: WinObject[]) {
-        wins.forEach((win) => {
+    private isMatching(sym: string, win: WinObject): boolean {
+        switch (sym) {
+            case Symbols.Reward1000: {
+                return false
+            }
+            case Symbols.Wild: {
+                return true
+            }
+            case win.winSymbol: {
+                return true
+            }
+            default: {
+                if (win.winSymbol === Symbols.Wild) {
+                    this.wins.push({ ...win })
+                    win.winSymbol = sym
+                    return true
+                } else {
+                    return false
+                }
+            }
+        }
+    }
+
+    private calculateSpecials() {
+        const symbolCombination = dataController.getSymbolCombination()
+
+        const win = new WinObject()
+        win.winSymbol = Symbols.Reward1000
+        let found = 0
+        for (const reel of symbolCombination) {
+            for (const sym of reel) {
+                if (sym === Symbols.Reward1000) found++
+            }
+        }
+
+        if (found > REELS_PER_REEL_HOLDER) found = REELS_PER_REEL_HOLDER
+
+        win.numberOfMatches = found - 1
+        if (found) this.wins.push(win)
+    }
+
+    private calculateWinAmounts() {
+        this.wins.forEach((win) => {
             if (win.winSymbol !== Symbols.Reward1000) {
                 const payoutData = PAYTABLE.find((pay) => pay.symbol === win.winSymbol)
                 if (!payoutData) return
@@ -64,29 +113,9 @@ class WinCalculator {
             this.totalWinAmount += win.winAmount
         })
 
-        return wins.filter((win) => win.winAmount !== 0)
-    }
-
-    private isMatching(sym: string): boolean {
-        switch (sym) {
-            case Symbols.Reward1000: {
-                return false
-            }
-            case Symbols.Wild: {
-                return true
-            }
-            case this.previousSym: {
-                return true
-            }
-            default: {
-                if (this.previousSym === Symbols.Wild) {
-                    this.previousSym = sym
-                    return true
-                } else return false
-            }
-        }
+        this.wins = this.wins.filter((win) => win.winAmount !== 0)
     }
 }
 
-const winCalculator: WinCalculator = new WinCalculator()
+const winCalculator: WinCalculator = WinCalculator.getInstance()
 export default winCalculator

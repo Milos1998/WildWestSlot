@@ -43,24 +43,16 @@ export default class WinLines extends Container {
     public displayOnlySelectedLines() {
         const numSelectedLines = dataController.getNumberOfLines()
         for (let i = 0; i < this.lines.length; i++)
-            if (i < numSelectedLines) this.displayLine(i)
-            else this.hideLine(i)
+            if (i < numSelectedLines) this.lines[i].visible = true
+            else this.lines[i].visible = false
     }
 
     public displayAllLines() {
-        for (let i = 0; i < this.lines.length; i++) this.displayLine(i)
+        for (let i = 0; i < this.lines.length; i++) this.lines[i].visible = true
     }
 
     public hideAllLines() {
-        for (let i = 0; i < this.lines.length; i++) this.hideLine(i)
-    }
-
-    private displayLine(lineNum: number) {
-        this.lines[lineNum].visible = true
-    }
-
-    private hideLine(lineNum: number) {
-        this.lines[lineNum].visible = false
+        for (let i = 0; i < this.lines.length; i++) this.lines[i].visible = false
     }
 
     public async startWinningLinesAnimation(stripes: Stripe[][]) {
@@ -74,7 +66,6 @@ export default class WinLines extends Container {
     public stopWinningLinesAnimation() {
         dataController.animationSequencer.repeat(0)
         dataController.animationSequencer.seek('endAnimateWinSymbols', false)
-        //obrisi sve sto curi memoriju
     }
 
     private queueWinningLinesAnimation(stripes: Stripe[][]) {
@@ -84,46 +75,69 @@ export default class WinLines extends Container {
 
         for (const win of wins) {
             const timeline = gsap.timeline()
-            const mask = new Graphics()
-            timeline.call(
-                () => {
-                    if (win.winSymbol !== Symbols.Reward1000) {
-                        this.displayLine(win.winLine)
-                        this.lines[win.winLine].mask = mask
-                        this.lines[win.winLine].addChild(mask)
-                    }
-                },
-                undefined,
-                0
-            )
+            dataController.animationSequencer.add(timeline)
 
+            if (win.winSymbol === Symbols.Reward1000) {
+                this.queueSpecialsAnimation(timeline, win.winAmount, stripes)
+                continue
+            }
+
+            const mask = new Graphics()
             mask.x = REELS_HOLDER_FRAME_THICKNESS
             mask.beginFill(0x0, 1)
             mask.drawRect(0, 0, this.myWidth, this.myHeight)
             mask.endFill()
+
+            this.toggleMaskVisibility(true, timeline, this.lines[win.winLine], mask, 0)
+
             //get all the symbols that are part of winning line and animate them on same timeline.
             for (let reelNum = 0; reelNum <= win.numberOfMatches; reelNum++) {
                 const positionOnReel = WIN_LINES_DATA[win.winLine].winPositions[reelNum]
                 stripes[reelNum][positionOnReel].animateSprite(timeline, this.lines[win.winLine].line.color, mask)
-                if (reelNum === win.numberOfMatches || win.winSymbol === Symbols.Reward1000)
-                    stripes[reelNum][positionOnReel].displayAmount(win.winAmount)
+                if (reelNum === win.numberOfMatches) stripes[reelNum][positionOnReel].displayAmount(win.winAmount)
             }
 
-            timeline.call(
-                () => {
-                    this.hideLine(win.winLine)
-                    this.lines[win.winLine].mask = null
-                    this.lines[win.winLine].removeChild(mask)
-                },
-                undefined,
-                timeline.duration()
-            )
-
-            dataController.animationSequencer.add(timeline)
+            this.toggleMaskVisibility(false, timeline, this.lines[win.winLine], mask, timeline.duration())
         }
 
         dataController.animationSequencer.repeat(-1)
         dataController.animationSequencer.pause()
         dataController.animationSequencer.addLabel('endAnimateWinSymbols', dataController.animationSequencer.duration())
+    }
+
+    private queueSpecialsAnimation(timeline: gsap.core.Timeline, winAmount: number, stripes: Stripe[][]) {
+        for (const reel of stripes) {
+            for (const stripe of reel) {
+                if (stripe.getSymbol() === Symbols.Reward1000) {
+                    stripe.animateSprite(timeline)
+                    stripe.displayAmount(winAmount)
+                }
+            }
+        }
+    }
+
+    private toggleMaskVisibility(
+        visible: boolean,
+        timeline: gsap.core.Timeline,
+        line: Graphics,
+        mask: Graphics,
+        toggleAt: number
+    ) {
+        let toggleFunction: (line: Graphics, mask: Graphics) => void
+        if (visible) {
+            toggleFunction = (line, mask) => {
+                line.visible = true
+                line.mask = mask
+                line.addChild(mask)
+            }
+        } else {
+            toggleFunction = (line, mask) => {
+                line.visible = false
+                line.mask = null
+                line.removeChild(mask)
+            }
+        }
+
+        timeline.call(toggleFunction, [line, mask], toggleAt)
     }
 }
