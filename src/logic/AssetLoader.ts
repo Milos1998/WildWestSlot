@@ -3,11 +3,12 @@ import { ASSETS } from '../assets'
 import { APP_HEIGHT, APP_WIDTH } from '../constants'
 import gameController from './GameController'
 
-export default class AssetLoader extends Container {
+class AssetLoader extends Container {
+    private static instance: AssetLoader | undefined = undefined
     private loadProgressionBar: Graphics
     private progressBar: Graphics
 
-    constructor() {
+    private constructor() {
         super()
 
         //setup graphics for progression
@@ -48,6 +49,12 @@ export default class AssetLoader extends Container {
         Loader.shared.load()
     }
 
+    public static getInstance() {
+        if (!AssetLoader.instance) AssetLoader.instance = new AssetLoader()
+
+        return AssetLoader.instance
+    }
+
     private loadingProgress(loader: Loader) {
         const progress = loader.progress / 100
         this.progressBar.scale.x = progress
@@ -58,3 +65,6 @@ export default class AssetLoader extends Container {
         gameController.initGameElements()
     }
 }
+
+const assetLoader: AssetLoader = AssetLoader.getInstance()
+export default assetLoader

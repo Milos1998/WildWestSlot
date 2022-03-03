@@ -1,13 +1,13 @@
 import { Application } from 'pixi.js'
 import * as PIXI from 'pixi.js' //for gsap
 import SlotMachine from '../components/SlotMachine'
-import AssetLoader from './AssetLoader'
 import dataController from './DataController'
 import { gsap } from 'gsap'
 import { PixiPlugin } from 'gsap/PixiPlugin'
 import winCalculator from './WinCalculator'
 import { Symbols } from '../constants/winLinesData'
 import { AutoSpinBtnState, SpinBtnState } from '../constants'
+import assetLoader from './AssetLoader'
 
 //Syncs processes of the game
 class GameController {
@@ -27,9 +27,7 @@ class GameController {
 
     public initGameController(_app: Application) {
         this.app = _app
-        const loader: AssetLoader = new AssetLoader()
-
-        this.app.stage.addChild(loader)
+        this.app.stage.addChild(assetLoader)
     }
 
     //get's called from Loader when caching is finished
