@@ -1,14 +1,64 @@
+html {
+    user-select: none;
+}
+
 * {
     padding: 0;
-    margin: 0;
+    margin: 0.5rem;
     border: 0;
 }
 
 body {
+    height: 100%;
+    background-color: darkslategray;
+}
+
+.flex-container {
     display: flex;
     align-items: center;
     justify-content: center;
     align-content: center;
-    height: 100vh;
-    background-color: darkslategray;
+}
+
+.scrollable {
+    display: block;
+    width: min(950px, 100%);
+    max-height: 400px;
+    overflow: auto;
+    border: black 3px solid;
+}
+
+.hide {
+    display: none;
+}
+
+.horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.vertical {
+    flex-direction: column;
+}
+
+img {
+    -webkit-user-drag: none;
+}
+
+.filteredImg {
+    background-color: black;
+    opacity: 0.2;
+}
+
+button {
+    font-size: 40px;
+    font-weight: 500;
+    width: 100px;
+    height: 50px;
+    background-color: lightblue;
+    border-radius: 25%;
+}
+
+button:hover {
+    border: lightblue 3px solid;
 }

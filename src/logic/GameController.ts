@@ -34,14 +34,15 @@ class GameController {
     public initGameElements() {
         PixiPlugin.registerPIXI(PIXI)
         gsap.registerPlugin(PixiPlugin)
+        this.applySpecialProperties()
 
         this.slotMachine = new SlotMachine()
         this.app.stage.addChild(this.slotMachine)
-        this.applySpecialProperties()
     }
 
     private applySpecialProperties() {
-        dataController.filterStripeSymbols(Symbols.NINE, Symbols.TEN, Symbols.J, Symbols.K, Symbols.Q, Symbols.A)
+        const filterSymbols = [Symbols.NINE, Symbols.TEN, Symbols.J, Symbols.K, Symbols.Q, Symbols.A]
+        filterSymbols.forEach((sym) => dataController.filterStripeSymbols(sym, false))
     }
 
     public increaseNumberOfLines() {

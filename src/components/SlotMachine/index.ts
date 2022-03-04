@@ -22,6 +22,7 @@ import dataController from '../../logic/DataController'
 import gameController from '../../logic/GameController'
 import AutoSpinButton from '../AutoSpinButton'
 import Display from '../Display'
+import { Info } from '../Info'
 import ReelsHolder from '../ReelsHolder'
 import SpinButton from '../SpinButton'
 import WinLines from '../WinLines'
@@ -38,6 +39,7 @@ export default class SlotMachine extends Container {
     public spinButton: SpinButton
     public autoSpinButton: AutoSpinButton
     public winLines: WinLines
+    private infoButton: Info
 
     constructor() {
         super()
@@ -111,5 +113,8 @@ export default class SlotMachine extends Container {
         this.spinButton = new SpinButton(SPIN_BUTTON_X, CENTRAL_PANNEL_Y, BUTTONS_SIZE)
         this.autoSpinButton = new AutoSpinButton(AUTO_SPIN_BUTTON_X, CENTRAL_PANNEL_Y, BUTTONS_SIZE)
         this.addChild(this.spinButton, this.autoSpinButton)
+
+        this.infoButton = new Info()
+        this.addChild(this.infoButton)
     }
 }

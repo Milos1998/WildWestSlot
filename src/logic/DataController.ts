@@ -36,19 +36,22 @@ class DataController {
     }
 
     private initStripeSymbols() {
-        const syms: string[] = []
-        Object.values(Symbols).forEach((sym) => syms.push(sym))
-        this.stripeSymbols = syms
+        Object.values(Symbols).forEach((sym) => this.stripeSymbols.push(sym))
     }
 
-    public filterStripeSymbols(...unwantedSymbols: string[]) {
-        this.filteredStripeSymbols = this.filteredStripeSymbols.filter((symbol) => {
-            return unwantedSymbols.find((unwanted) => unwanted === symbol) === undefined
-        })
+    public filterStripeSymbols(symbol: string, included: boolean) {
+        if (dataController.stripeSymbols.indexOf(symbol) === -1) throw new Error('invalid symbol passed to filter')
+        if (!included && dataController.filteredStripeSymbols.length === 1) throw new Error('too few Stripes')
+
+        const index = dataController.filteredStripeSymbols.indexOf(symbol)
+
+        if (included && index === -1) dataController.filteredStripeSymbols.push(symbol)
+        else if (!included && index !== -1) dataController.filteredStripeSymbols.splice(index, 1)
+        else throw new Error(`element is ${index === -1 ? 'not' : ''} in array`)
     }
 
     public resetStripeSymbolFilter() {
-        this.filteredStripeSymbols = this.stripeSymbols
+        this.filteredStripeSymbols = [...this.stripeSymbols]
     }
 
     public resetAnimationSequencer() {

@@ -7,8 +7,20 @@
     <title>Wild West</title>
     <link rel="stylesheet" href="./style.css" type="text/css">
 </head>
-<body>
+<body class="flex-container vertical">
     <canvas id="pixi-canvas"></canvas>
     <script src="./app.js"></script>
+    <div id="filter"  class="scrollable hide">
+        <div class="flex-container vertical">
+            <div id="filter-items" class="flex-container horizontal"></div>
+            <button id="filter-button">X</button>
+        </div>
+    </div>
+    <div id="info" class="scrollable hide">
+        <div class="flex-container vertical">
+            <div id="info-items" class="flex-container vertical"></div>
+            <button id="info-button">X</button>
+        </div>
+    </div>
 </body>
 </html>
