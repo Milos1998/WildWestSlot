@@ -4,18 +4,18 @@ import { Symbols, WIN_LINES_DATA } from '../constants/winLinesData'
 import { WinObject } from './WinCalculator'
 
 class DataController {
-    private static instance: DataController | undefined = undefined
+    private static _instance: DataController | undefined = undefined
     private stripeSymbols: string[] = []
     private filteredStripeSymbols: string[] = []
-    private numberOfLines = WIN_LINES_DATA.length
-    private selectedBetOption = 3
-    private balance = STARTING_BALANCE
-    private spinBtnState = SpinBtnState.Neutral
-    private autoSpinBtnState = AutoSpinBtnState.OffEnabled
+    private _numberOfLines = WIN_LINES_DATA.length
+    private selectedBetOption = Math.floor(BETS.length / 2)
+    private _balance = STARTING_BALANCE
+    public spinButtonState: SpinBtnState = SpinBtnState.Neutral
+    public autoSpinButtonState: AutoSpinBtnState = AutoSpinBtnState.OffEnabled
     public animationSequencer
-    private symbolCombination: string[][] = []
-    private totalCashWin = 0
-    private wins: WinObject[] = []
+    public symbolCombination: string[][] = []
+    public totalCashWin = 0
+    public wins: WinObject[] = []
 
     private constructor() {
         this.animationSequencer = gsap.timeline()
@@ -23,11 +23,11 @@ class DataController {
         this.resetStripeSymbolFilter()
     }
 
-    public static getInstance() {
-        if (!DataController.instance) {
-            DataController.instance = new DataController()
+    static get instance() {
+        if (!DataController._instance) {
+            DataController._instance = new DataController()
         }
-        return DataController.instance
+        return DataController._instance
     }
 
     public getStripeSymbols(filtered = true) {
@@ -56,30 +56,30 @@ class DataController {
         this.animationSequencer = gsap.timeline()
     }
 
-    public getMaxNumberOfLines() {
+    get maxNumberOfLines() {
         return WIN_LINES_DATA.length
     }
 
-    public getNumberOfLines() {
-        return this.numberOfLines
+    get numberOfLines() {
+        return this._numberOfLines
     }
 
     public decrementNumberOfLines() {
-        if (this.numberOfLines > 1) this.numberOfLines--
-        return this.numberOfLines
+        if (this._numberOfLines > 1) this._numberOfLines--
+        return this._numberOfLines
     }
 
     public incrementNumberOfLines() {
-        if (this.numberOfLines < WIN_LINES_DATA.length) this.numberOfLines++
-        return this.numberOfLines
+        if (this._numberOfLines < WIN_LINES_DATA.length) this._numberOfLines++
+        return this._numberOfLines
     }
 
-    public getBet() {
+    get bet() {
         return BETS[this.selectedBetOption]
     }
 
-    public getTotalBet() {
-        return this.numberOfLines * this.getBet()
+    get totalBet() {
+        return this._numberOfLines * this.bet
     }
 
     public decrementBet() {
@@ -92,62 +92,22 @@ class DataController {
         return BETS[this.selectedBetOption]
     }
 
-    public getMaxBet() {
+    get maxBet() {
         return BETS[BETS.length - 1]
     }
 
-    public getMinBet() {
+    get minBet() {
         return BETS[0]
     }
 
-    public getBalance() {
-        return this.balance
+    get balance() {
+        return this._balance
     }
 
     public updateBalance(amount: number) {
-        this.balance += amount
-    }
-
-    public setSpinBtnState(state: SpinBtnState) {
-        this.spinBtnState = state
-    }
-
-    public getSpinBtnState() {
-        return this.spinBtnState
-    }
-
-    public setAutoSpinBtnState(state: AutoSpinBtnState) {
-        this.autoSpinBtnState = state
-    }
-
-    public getAutoSpinBtnState() {
-        return this.autoSpinBtnState
-    }
-
-    public setSymbolCombination(symbolCombination: string[][]) {
-        this.symbolCombination = symbolCombination
-    }
-
-    public getSymbolCombination() {
-        return this.symbolCombination
-    }
-
-    public setTotalCashWin(totalCashWin: number) {
-        this.totalCashWin = totalCashWin
-    }
-
-    public getTotalCashWin() {
-        return this.totalCashWin
-    }
-
-    public setWins(wins: WinObject[]) {
-        this.wins = wins
-    }
-
-    public getWins() {
-        return this.wins
+        this._balance += amount
     }
 }
 
-const dataController: DataController = DataController.getInstance()
+const dataController: DataController = DataController.instance
 export default dataController

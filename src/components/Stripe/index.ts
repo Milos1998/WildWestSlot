@@ -3,7 +3,7 @@ import dataController from '../../logic/DataController'
 import { StripeAnimator } from './StripeAnimator'
 
 export default class Stripe extends Container {
-    private symbol = ''
+    private _symbol = ''
     public sprite: Sprite = new Sprite()
     public stripeAnimator: StripeAnimator | null = null
 
@@ -20,7 +20,7 @@ export default class Stripe extends Container {
         this.sprite.width = width
         this.sprite.height = height
 
-        this.setSymbol(textureSource)
+        this.symbol = textureSource
     }
 
     private randomSymbolSelection() {
@@ -29,15 +29,15 @@ export default class Stripe extends Container {
         return stripeSymbols[symbolNum]
     }
 
-    public setSymbol(textureSource: string | undefined) {
+    set symbol(textureSource: string | undefined) {
         if (!textureSource) textureSource = this.randomSymbolSelection()
 
-        this.symbol = textureSource
+        this._symbol = textureSource
         this.sprite.texture = Texture.from(textureSource)
     }
 
-    public getSymbol() {
-        return this.symbol
+    get symbol(): string {
+        return this._symbol
     }
 
     public animateSprite(timeline: gsap.core.Timeline, lineColor?: number, mask?: Graphics) {

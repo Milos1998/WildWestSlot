@@ -11,18 +11,18 @@ import assetLoader from './AssetLoader'
 
 //Syncs processes of the game
 class GameController {
-    private static instance: GameController | undefined = undefined
+    private static _instance: GameController | undefined = undefined
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private app: Application = undefined as any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private slotMachine: SlotMachine = undefined as any
 
-    public static getInstance() {
-        if (!GameController.instance) {
-            GameController.instance = new GameController()
+    static get instance() {
+        if (!GameController._instance) {
+            GameController._instance = new GameController()
         }
 
-        return GameController.instance
+        return GameController._instance
     }
 
     public initGameController(_app: Application) {
@@ -47,11 +47,11 @@ class GameController {
     public increaseNumberOfLines() {
         const newNumOfLines = dataController.incrementNumberOfLines()
 
-        if (newNumOfLines === dataController.getMaxNumberOfLines()) this.slotMachine.linesSelector.disableMoreButton()
+        if (newNumOfLines === dataController.maxNumberOfLines) this.slotMachine.linesSelector.disableMoreButton()
         this.slotMachine.linesSelector.enableLessButton()
 
-        this.slotMachine.linesSelector.setDisplayValue(newNumOfLines)
-        this.slotMachine.totalBetDisplay.setDisplayValue(dataController.getTotalBet())
+        this.slotMachine.linesSelector.displayValue = newNumOfLines
+        this.slotMachine.totalBetDisplay.displayValue = dataController.totalBet
 
         this.slotMachine.winLines.displayOnlySelectedLines()
     }
@@ -62,8 +62,8 @@ class GameController {
         if (newNumOfLines === 1) this.slotMachine.linesSelector.disableLessButton()
         this.slotMachine.linesSelector.enableMoreButton()
 
-        this.slotMachine.linesSelector.setDisplayValue(newNumOfLines)
-        this.slotMachine.totalBetDisplay.setDisplayValue(dataController.getTotalBet())
+        this.slotMachine.linesSelector.displayValue = newNumOfLines
+        this.slotMachine.totalBetDisplay.displayValue = dataController.totalBet
 
         this.slotMachine.winLines.displayOnlySelectedLines()
     }
@@ -71,11 +71,11 @@ class GameController {
     public increaseBet() {
         const newBet = dataController.incrementBet()
 
-        if (newBet === dataController.getMaxBet()) this.slotMachine.betSelector.disableMoreButton()
+        if (newBet === dataController.maxBet) this.slotMachine.betSelector.disableMoreButton()
         this.slotMachine.betSelector.enableLessButton()
 
-        this.slotMachine.betSelector.setDisplayValue(newBet)
-        this.slotMachine.totalBetDisplay.setDisplayValue(dataController.getTotalBet())
+        this.slotMachine.betSelector.displayValue = newBet
+        this.slotMachine.totalBetDisplay.displayValue = dataController.totalBet
 
         this.slotMachine.winLines.hideAllLines()
     }
@@ -83,11 +83,11 @@ class GameController {
     public decreaseBet() {
         const newBet = dataController.decrementBet()
 
-        if (newBet === dataController.getMinBet()) this.slotMachine.betSelector.disableLessButton()
+        if (newBet === dataController.minBet) this.slotMachine.betSelector.disableLessButton()
         this.slotMachine.betSelector.enableMoreButton()
 
-        this.slotMachine.betSelector.setDisplayValue(newBet)
-        this.slotMachine.totalBetDisplay.setDisplayValue(dataController.getTotalBet())
+        this.slotMachine.betSelector.displayValue = newBet
+        this.slotMachine.totalBetDisplay.displayValue = dataController.totalBet
 
         this.slotMachine.winLines.hideAllLines()
     }
@@ -95,7 +95,7 @@ class GameController {
     public async spinAutomatiaclly() {
         this.slotMachine.autoSpinButton.setStateOn()
 
-        while (dataController.getAutoSpinBtnState() === AutoSpinBtnState.On) {
+        while (dataController.autoSpinButtonState === AutoSpinBtnState.On) {
             await this.spin()
         }
 
@@ -106,7 +106,7 @@ class GameController {
     }
 
     public handleAutoSpinButtonEvent() {
-        switch (dataController.getAutoSpinBtnState()) {
+        switch (dataController.autoSpinButtonState) {
             case AutoSpinBtnState.On: {
                 this.slotMachine.autoSpinButton.setStateOffDisabled()
                 break
@@ -130,7 +130,7 @@ class GameController {
     }
 
     public handleSpinButtonEvent() {
-        switch (dataController.getSpinBtnState()) {
+        switch (dataController.spinButtonState) {
             case SpinBtnState.Neutral: {
                 this.spinManually()
                 break
@@ -147,8 +147,8 @@ class GameController {
     }
 
     public collectCash() {
-        dataController.updateBalance(dataController.getTotalCashWin())
-        this.slotMachine.balance.setDisplayValue(dataController.getBalance())
+        dataController.updateBalance(dataController.totalCashWin)
+        this.slotMachine.balance.displayValue = dataController.balance
         this.slotMachine.winLines.stopWinningLinesAnimation()
     }
 
@@ -158,29 +158,29 @@ class GameController {
         this.slotMachine.linesSelector.disableSelector()
         this.slotMachine.winLines.hideAllLines()
 
-        this.takeMoney(dataController.getTotalBet())
+        this.takeMoney(dataController.totalBet)
 
         await this.slotMachine.reelsHolder.spinReels(() => {
             this.slotMachine.spinButton.setStateDisabledSkip()
         })
 
         winCalculator.calculateWin()
-        if (dataController.getTotalCashWin()) {
+        if (dataController.totalCashWin) {
             this.slotMachine.spinButton.setStateCollect()
-            this.slotMachine.cashTray.setDisplayValue(dataController.getTotalCashWin())
-            await this.slotMachine.winLines.startWinningLinesAnimation(this.slotMachine.reelsHolder.getStripes())
+            this.slotMachine.cashTray.displayValue = dataController.totalCashWin
+            await this.slotMachine.winLines.startWinningLinesAnimation(this.slotMachine.reelsHolder.stripes)
         }
 
-        this.slotMachine.cashTray.setDisplayValue('')
+        this.slotMachine.cashTray.displayValue = ''
     }
 
     private takeMoney(amount: number) {
-        if (dataController.getBalance() < amount) {
+        if (dataController.balance < amount) {
             this.gameOver()
         }
 
         dataController.updateBalance(-amount)
-        this.slotMachine.balance.setDisplayValue(dataController.getBalance())
+        this.slotMachine.balance.displayValue = dataController.balance
     }
 
     private gameOver() {
@@ -188,5 +188,5 @@ class GameController {
     }
 }
 
-const gameController: GameController = GameController.getInstance()
+const gameController: GameController = GameController.instance
 export default gameController

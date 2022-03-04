@@ -10,14 +10,14 @@ export class WinObject {
 }
 
 class WinCalculator {
-    private static instance: WinCalculator | undefined = undefined
+    private static _instance: WinCalculator | undefined = undefined
     private totalWinAmount = 0
     private wins: WinObject[] = []
 
-    public static getInstance() {
-        if (!WinCalculator.instance) WinCalculator.instance = new WinCalculator()
+    static get instance() {
+        if (!WinCalculator._instance) WinCalculator._instance = new WinCalculator()
 
-        return WinCalculator.instance
+        return WinCalculator._instance
     }
 
     public calculateWin() {
@@ -28,13 +28,13 @@ class WinCalculator {
         this.calculateSpecials()
         this.calculateWinAmounts()
 
-        dataController.setWins(this.wins)
-        dataController.setTotalCashWin(this.totalWinAmount)
+        dataController.wins = this.wins
+        dataController.totalCashWin = this.totalWinAmount
     }
 
     private calculateMatches() {
-        const symbolCombination = dataController.getSymbolCombination()
-        for (let currentLine = 0; currentLine < dataController.getNumberOfLines(); currentLine++) {
+        const symbolCombination = dataController.symbolCombination
+        for (let currentLine = 0; currentLine < dataController.numberOfLines; currentLine++) {
             const wp = WIN_LINES_DATA[currentLine].winPositions
 
             const first = symbolCombination[0][wp[0]]
@@ -81,7 +81,7 @@ class WinCalculator {
     }
 
     private calculateSpecials() {
-        const symbolCombination = dataController.getSymbolCombination()
+        const symbolCombination = dataController.symbolCombination
 
         const win = new WinObject()
         win.winSymbol = Symbols.Reward1000
@@ -103,11 +103,11 @@ class WinCalculator {
             if (win.winSymbol !== Symbols.Reward1000) {
                 const payoutData = PAYTABLE.find((pay) => pay.symbol === win.winSymbol)
                 if (!payoutData) return
-                win.winAmount = payoutData.payoutPerMatch[win.numberOfMatches] * dataController.getBet()
+                win.winAmount = payoutData.payoutPerMatch[win.numberOfMatches] * dataController.bet
             } else {
                 const payout = PAYTABLE.find((pay) => pay.symbol === Symbols.Reward1000)?.specialPayout
                 if (!payout) return
-                win.winAmount = payout[win.numberOfMatches] * dataController.getTotalBet()
+                win.winAmount = payout[win.numberOfMatches] * dataController.totalBet
             }
 
             this.totalWinAmount += win.winAmount
@@ -117,5 +117,5 @@ class WinCalculator {
     }
 }
 
-const winCalculator: WinCalculator = WinCalculator.getInstance()
+const winCalculator: WinCalculator = WinCalculator.instance
 export default winCalculator

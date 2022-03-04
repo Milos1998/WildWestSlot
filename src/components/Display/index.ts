@@ -22,7 +22,7 @@ const displayValueStyle = new TextStyle({
 
 export default class Display extends Graphics {
     private description: Text
-    private displayValue: Text
+    private _displayValue: Text
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public moreButton: Sprite = undefined as any
@@ -57,19 +57,19 @@ export default class Display extends Graphics {
         this.description.x = this.width / 2
         this.description.y = (this.height * 9) / 13
 
-        this.displayValue = new Text(_displayValue, displayValueStyle)
-        this.displayValue.anchor.set(0.5, 0.5)
-        this.displayValue.x = this.width / 2
-        this.displayValue.y = (this.height * 4) / 13
+        this._displayValue = new Text(_displayValue, displayValueStyle)
+        this._displayValue.anchor.set(0.5, 0.5)
+        this._displayValue.x = this.width / 2
+        this._displayValue.y = (this.height * 4) / 13
 
-        this.addChild(this.description, this.displayValue)
+        this.addChild(this.description, this._displayValue)
 
         if (isSelector) this.initSelectorButtons()
     }
 
-    public setDisplayValue(newDisplayValue: string | number) {
+    set displayValue(newDisplayValue: string | number) {
         if (typeof newDisplayValue === 'number') newDisplayValue = (Math.round(newDisplayValue * 100) / 100).toString()
-        this.displayValue.text = newDisplayValue
+        this._displayValue.text = newDisplayValue
     }
 
     public disableLessButton() {

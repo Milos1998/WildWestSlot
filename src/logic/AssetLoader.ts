@@ -4,7 +4,7 @@ import { APP_HEIGHT, APP_WIDTH } from '../constants'
 import gameController from './GameController'
 
 class AssetLoader extends Container {
-    private static instance: AssetLoader | undefined = undefined
+    private static _instance: AssetLoader | undefined = undefined
     private loadProgressionBar: Graphics
     private progressBar: Graphics
 
@@ -49,10 +49,10 @@ class AssetLoader extends Container {
         Loader.shared.load()
     }
 
-    public static getInstance() {
-        if (!AssetLoader.instance) AssetLoader.instance = new AssetLoader()
+    static get instance() {
+        if (!AssetLoader._instance) AssetLoader._instance = new AssetLoader()
 
-        return AssetLoader.instance
+        return AssetLoader._instance
     }
 
     private loadingProgress(loader: Loader) {
@@ -66,5 +66,5 @@ class AssetLoader extends Container {
     }
 }
 
-const assetLoader: AssetLoader = AssetLoader.getInstance()
+const assetLoader: AssetLoader = AssetLoader.instance
 export default assetLoader

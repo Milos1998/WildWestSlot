@@ -10,7 +10,7 @@ import {
 import Stripe from '../Stripe'
 
 export default class Reel extends Container {
-    private stripes: Stripe[]
+    private _stripes: Stripe[]
     private forCleanup: Stripe[] = []
 
     constructor(x: number, y: number) {
@@ -26,24 +26,24 @@ export default class Reel extends Container {
         this.mask = mask
 
         //init stripe
-        this.stripes = []
+        this._stripes = []
 
         for (let i = 0; i < STRIPES_PER_REEL; i++) {
-            this.stripes.push(new Stripe(0, this.y + i * STRIPE_SIZE, STRIPE_SIZE, STRIPE_SIZE))
-            this.addChild(this.stripes[i])
+            this._stripes.push(new Stripe(0, this.y + i * STRIPE_SIZE, STRIPE_SIZE, STRIPE_SIZE))
+            this.addChild(this._stripes[i])
         }
     }
 
     public makeAllStripesIdentical(symbol: string) {
-        for (const stripe of this.stripes) {
-            stripe.setSymbol(symbol)
+        for (const stripe of this._stripes) {
+            stripe.symbol = symbol
         }
     }
 
     private insertStripe(symbol = '') {
-        const first = this.stripes[0]
+        const first = this._stripes[0]
         const str = new Stripe(first.x, first.y - first.height, first.width, first.height, symbol)
-        this.stripes.unshift(str)
+        this._stripes.unshift(str)
         this.addChild(str)
     }
 
@@ -55,21 +55,21 @@ export default class Reel extends Container {
         for (let i = 0; i < aditionalStripes; i++) this.insertStripe()
 
         reelTimeline
-            .to(this.stripes, {
+            .to(this._stripes, {
                 pixi: {
                     y: `+=${STRIPES_PER_REEL * STRIPE_SIZE}`
                 },
                 ease: 'power3.in',
                 duration: REEL_SPIN_START_ROTATION
             })
-            .to(this.stripes, {
+            .to(this._stripes, {
                 pixi: {
                     y: `+=${midSpinRotations * STRIPE_SIZE}`
                 },
                 duration: REEL_SPIN_MID_ROTATION,
                 ease: 'none'
             })
-            .to(this.stripes, {
+            .to(this._stripes, {
                 pixi: {
                     y: `+=${STRIPES_PER_REEL * STRIPE_SIZE}`
                 },
@@ -77,8 +77,8 @@ export default class Reel extends Container {
                 duration: REEL_SPIN_END_ROTATION
             })
 
-        this.forCleanup = [this.stripes.shift() as Stripe]
-        this.forCleanup = [...this.stripes.splice(STRIPES_PER_REEL)]
+        this.forCleanup = [this._stripes.shift() as Stripe]
+        this.forCleanup = [...this._stripes.splice(STRIPES_PER_REEL)]
 
         return reelTimeline
     }
@@ -87,16 +87,11 @@ export default class Reel extends Container {
         for (const stripe of this.forCleanup) stripe.destroy()
     }
 
-    public getSymbols() {
-        const syms = []
-        for (const stripe of this.stripes) {
-            syms.push(stripe.getSymbol())
-        }
-
-        return syms
+    get symbols() {
+        return this._stripes.map((stripe) => stripe.symbol)
     }
 
-    public getStripes() {
-        return this.stripes
+    get stripes() {
+        return this._stripes
     }
 }

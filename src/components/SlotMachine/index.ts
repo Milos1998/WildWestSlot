@@ -56,13 +56,13 @@ export default class SlotMachine extends Container {
         this.winLines = new WinLines(REELS_HOLDER_X, REELS_HOLDER_Y, REELS_HOLDER_WIDTH, REELS_HOLDER_HEIGHT)
         this.addChild(this.winLines)
 
-        //left pannel   //x, y, width, height, "Lines", true
+        //left pannel
         this.linesSelector = new Display(
             LEFT_PANNEL_X,
             LINES_SELECTOR_Y,
             DISPLAYS_WIDTH,
             DISPLAYS_HEIGHT,
-            dataController.getMaxNumberOfLines().toString(),
+            dataController.maxNumberOfLines.toString(),
             'Lines',
             true
         )
@@ -76,7 +76,7 @@ export default class SlotMachine extends Container {
             BET_SELECTOR_Y,
             DISPLAYS_WIDTH,
             DISPLAYS_HEIGHT,
-            dataController.getBet().toString(),
+            dataController.bet.toString(),
             'Bet per line',
             true
         )
@@ -90,7 +90,7 @@ export default class SlotMachine extends Container {
             TOTAL_BET_DISPLAY_Y,
             DISPLAYS_WIDTH,
             DISPLAYS_HEIGHT,
-            dataController.getTotalBet().toString(),
+            dataController.totalBet.toString(),
             'Total bet'
         )
         this.addChild(this.linesSelector, this.betSelector, this.totalBetDisplay)
@@ -102,7 +102,7 @@ export default class SlotMachine extends Container {
             BALANCE_Y,
             DISPLAYS_WIDTH,
             DISPLAYS_HEIGHT,
-            dataController.getBalance().toString(),
+            dataController.balance.toString(),
             'Balance'
         )
         this.addChild(this.cashTray, this.balance)

@@ -59,12 +59,12 @@ export default class ReelsHolder extends Container {
         dataController.animationSequencer.addLabel('spinReels')
 
         for (let i = 0; i < this.reels.length; i++) {
-            dataController.animationSequencer.add(this.reels[i].queueReelAnimation(), `<${REEL_SPIN_DELAY}`)
+            dataController.animationSequencer.add(this.reels[i].queueReelAnimation(), `${i * REEL_SPIN_DELAY}`)
         }
 
         dataController.animationSequencer.addLabel('reelsStopping', REEL_SPIN_START_ROTATION + REEL_SPIN_MID_ROTATION)
         dataController.animationSequencer.pause()
-        dataController.setSymbolCombination(this.getSymbolsCombination())
+        dataController.symbolCombination = this.symbolsCombination
         dataController.animationSequencer.call(
             () => {
                 this.animationCleanup()
@@ -75,14 +75,14 @@ export default class ReelsHolder extends Container {
     }
 
     private animationCleanup() {
-        for (const reel of this.reels) reel.animationCleanup()
+        this.reels.forEach((reel) => reel.animationCleanup())
     }
 
-    private getSymbolsCombination() {
-        return this.reels.map((reel) => reel.getSymbols())
+    get symbolsCombination() {
+        return this.reels.map((reel) => reel.symbols)
     }
 
-    public getStripes() {
-        return this.reels.map((reel) => reel.getStripes())
+    get stripes() {
+        return this.reels.map((reel) => reel.stripes)
     }
 }

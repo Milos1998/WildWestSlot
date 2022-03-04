@@ -27,7 +27,6 @@ export default class AutoSpinButton extends Graphics {
     constructor(_x: number, _y: number, size: number) {
         super()
 
-        //draw button
         this.beginFill(AUTO_SPIN_BUTTON_OFF_COLOR)
         this.lineStyle(BUTTONS_FRAME_THICKNESS, BUTTONS_FRAME_COLOR)
         this.drawRoundedRect(0, 0, size, size, 15)
@@ -37,7 +36,6 @@ export default class AutoSpinButton extends Graphics {
 
         this.endFill()
 
-        //set image
         this.image = Sprite.from('auto-spin')
         this.image.tint = BUTTON_DECORATION_ACTIVE_COLOR
         this.image.x = size * 0.5
@@ -45,7 +43,6 @@ export default class AutoSpinButton extends Graphics {
         this.image.anchor.set(0.5, 0.5)
         this.addChild(this.image)
 
-        //set text
         this.description = new Text('Auto: off', descriptionStyle)
         this.description.tint = BUTTON_DECORATION_ACTIVE_COLOR
         this.description.y = size - this.description.height - 10
@@ -53,7 +50,6 @@ export default class AutoSpinButton extends Graphics {
         this.description.anchor.set(0.5, 0)
         this.addChild(this.description)
 
-        //functionality
         dataController
         this.on('pointertap', () => {
             gameController.handleAutoSpinButtonEvent()
@@ -71,7 +67,7 @@ export default class AutoSpinButton extends Graphics {
         this.tint = 0xffffff
 
         this.interactive = true
-        dataController.setAutoSpinBtnState(AutoSpinBtnState.On)
+        dataController.autoSpinButtonState = AutoSpinBtnState.On
     }
 
     public setStateOffEnabled() {
@@ -84,7 +80,7 @@ export default class AutoSpinButton extends Graphics {
         this.tint = 0xffffff
 
         this.interactive = true
-        dataController.setAutoSpinBtnState(AutoSpinBtnState.OffEnabled)
+        dataController.autoSpinButtonState = AutoSpinBtnState.OffEnabled
     }
 
     public setStateOffDisabled() {
@@ -97,7 +93,7 @@ export default class AutoSpinButton extends Graphics {
         this.tint = AUTO_SPIN_BUTTON_OFF_INACTIVE_TINT
 
         this.interactive = false
-        dataController.setAutoSpinBtnState(AutoSpinBtnState.OffDisabled)
+        dataController.autoSpinButtonState = AutoSpinBtnState.OffDisabled
     }
 
     private reDrawRec(fillColor: number) {

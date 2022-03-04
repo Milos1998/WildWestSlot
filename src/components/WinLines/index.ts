@@ -41,7 +41,7 @@ export default class WinLines extends Container {
     }
 
     public displayOnlySelectedLines() {
-        const numSelectedLines = dataController.getNumberOfLines()
+        const numSelectedLines = dataController.numberOfLines
         for (let i = 0; i < this.lines.length; i++)
             if (i < numSelectedLines) this.lines[i].visible = true
             else this.lines[i].visible = false
@@ -69,7 +69,7 @@ export default class WinLines extends Container {
     }
 
     private queueWinningLinesAnimation(stripes: Stripe[][]) {
-        const wins = [...dataController.getWins()].sort((w1, w2) => w2.winAmount - w1.winAmount)
+        const wins = [...dataController.wins].sort((w1, w2) => w2.winAmount - w1.winAmount)
 
         dataController.animationSequencer.addLabel('animateWinSymbols')
 
@@ -108,7 +108,7 @@ export default class WinLines extends Container {
     private queueSpecialsAnimation(timeline: gsap.core.Timeline, winAmount: number, stripes: Stripe[][]) {
         for (const reel of stripes) {
             for (const stripe of reel) {
-                if (stripe.getSymbol() === Symbols.Reward1000) {
+                if (stripe.symbol === Symbols.Reward1000) {
                     stripe.animateSprite(timeline)
                     stripe.displayAmount(winAmount)
                 }
