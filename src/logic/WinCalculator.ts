@@ -100,15 +100,12 @@ class WinCalculator {
 
     private calculateWinAmounts() {
         this.wins.forEach((win) => {
-            if (win.winSymbol !== Symbols.Reward1000) {
-                const payoutData = PAYTABLE.find((pay) => pay.symbol === win.winSymbol)
-                if (!payoutData) return
+            const payoutData = PAYTABLE.find((pay) => pay.symbol === win.winSymbol)
+            if (!payoutData) return
+
+            if (win.winSymbol !== Symbols.Reward1000)
                 win.winAmount = payoutData.payoutPerMatch[win.numberOfMatches] * dataController.bet
-            } else {
-                const payout = PAYTABLE.find((pay) => pay.symbol === Symbols.Reward1000)?.specialPayout
-                if (!payout) return
-                win.winAmount = payout[win.numberOfMatches] * dataController.totalBet
-            }
+            else win.winAmount = payoutData.payoutPerMatch[win.numberOfMatches] * dataController.totalBet
 
             this.totalWinAmount += win.winAmount
         })

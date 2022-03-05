@@ -1,15 +1,16 @@
 import { Sprite, Texture } from 'pixi.js'
 import { ASSETS } from '../../assets'
 import { APP_WIDTH, INFO_BUTTON_PADDING } from '../../constants'
+import { PAYTABLE, Symbols } from '../../constants/winLinesData'
 import dataController from '../../logic/DataController'
-import { makeImage } from './htmlUtils'
+import { makeImage, makeSpan } from './htmlUtils'
 
 export class Info extends Sprite {
     private timeoutId = 0
+    private pointerHoldActive = false
     private filterDisplayed = false
     private infoDisplayed = false
-    private pointerHoldActive = false
-    private symbolsData: { url: string; name: string; included: boolean }[] = []
+    private symbolsData: { url: string; name: string; included: boolean; payouts: number[] }[] = []
 
     constructor() {
         super()
@@ -44,6 +45,7 @@ export class Info extends Sprite {
 
     private cancelHold(isClick: boolean) {
         if (!this.pointerHoldActive) return
+
         clearTimeout(this.timeoutId)
         if (isClick) this.displayInfo(true)
     }
@@ -54,8 +56,14 @@ export class Info extends Sprite {
                 this.symbolsData.push({
                     url: asset.url,
                     name: asset.name,
-                    included: true
+                    included: dataController.getStripeSymbols().indexOf(asset.name) !== -1,
+                    payouts: [
+                        ...(PAYTABLE.find((item) => item.symbol === asset.name) as typeof PAYTABLE[0]).payoutPerMatch
+                    ]
                 })
+        })
+        this.symbolsData.forEach((sym) => {
+            sym.payouts = sym.payouts.sort((p1, p2) => p2 - p1)
         })
     }
 
@@ -64,18 +72,17 @@ export class Info extends Sprite {
 
         for (const symbol of this.symbolsData) {
             const img = makeImage(symbol.url)
+            filterItemsContainer?.appendChild(img)
 
-            if (dataController.getStripeSymbols().indexOf(symbol.name) === -1) {
-                img.classList.add('filteredImg')
-                symbol.included = false
-            }
+            if (!symbol.included) img.classList.add('filteredImg')
+
             img.onclick = () => {
-                img.classList.toggle('filteredImg')
                 symbol.included = !symbol.included
+                img.style.opacity = symbol.included ? '1' : '0.2'
                 dataController.filterStripeSymbols(symbol.name, symbol.included)
             }
-            filterItemsContainer?.appendChild(img)
         }
+
         const closeButton = document.getElementById('filter-button') as HTMLElement
         closeButton.onclick = () => this.displayFilter(false)
     }
@@ -87,15 +94,30 @@ export class Info extends Sprite {
     }
 
     private initInfo() {
-        const infoItemsContainer = document.getElementById('info-items') as HTMLElement
+        this.editSpecialsImages()
+        const payTableContainer = document.getElementById('pay-table') as HTMLElement
 
         for (const symbol of this.symbolsData) {
             const img = makeImage(symbol.url)
-            infoItemsContainer.appendChild(img)
+            payTableContainer.appendChild(img)
+            img.classList.add(...['pay-table-item'])
+            symbol.payouts.forEach((payout) => {
+                payTableContainer.appendChild(makeSpan(payout > 0 ? payout.toString() : ' ', 'pay-table-item'))
+            })
         }
 
         const closeButton = document.getElementById('info-button') as HTMLElement
         closeButton.onclick = () => this.displayInfo(false)
+    }
+
+    private editSpecialsImages() {
+        const wildImg = document.getElementById('wild-img')
+        const specialImg = document.getElementById('special-img')
+
+        this.symbolsData.forEach((symbol) => {
+            if (symbol.name === Symbols.Wild) wildImg?.setAttribute('src', symbol.url)
+            if (symbol.name === Symbols.Reward1000) specialImg?.setAttribute('src', symbol.url)
+        })
     }
 
     private displayInfo(displayed: boolean) {

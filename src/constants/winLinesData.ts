@@ -251,8 +251,7 @@ export const PAYTABLE = [
     },
     {
         symbol: Symbols.Reward1000,
-        payoutPerMatch: [],
-        specialPayout: [1, 3, 10, 100, 1000]
+        payoutPerMatch: [1, 3, 10, 100, 1000]
     }
 ]
 

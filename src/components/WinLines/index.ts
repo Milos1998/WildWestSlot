@@ -1,5 +1,5 @@
 import { Container, Graphics } from 'pixi.js'
-import { REELS_HOLDER_FRAME_THICKNESS, STRIPE_SIZE, WIN_LINE_THICKNESS } from '../../constants'
+import { REELS_HOLDER_FRAME_THICKNESS, REELS_PER_REEL_HOLDER, STRIPE_SIZE, WIN_LINE_THICKNESS } from '../../constants'
 import { LINE_COLORS, LINE_OFFSETS, WIN_LINES_DATA } from '../../constants/winLinesData'
 import dataController from '../../logic/DataController'
 import { Symbols } from '../../constants/winLinesData'
@@ -29,7 +29,7 @@ export default class WinLines extends Container {
             let offsetX = STRIPE_SIZE / 2 + REELS_HOLDER_FRAME_THICKNESS
             line.moveTo(0, wld.winPositions[0] * STRIPE_SIZE + offsetY)
             let j
-            for (j = 0; j < wld.winPositions.length; j++) {
+            for (j = 0; j < REELS_PER_REEL_HOLDER; j++) {
                 offsetX += REELS_HOLDER_FRAME_THICKNESS
                 line.lineTo(j * STRIPE_SIZE + offsetX, wld.winPositions[j] * STRIPE_SIZE + offsetY)
             }

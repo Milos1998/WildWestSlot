@@ -56,6 +56,7 @@ export const BUTTON_DECORATION_INACTIVE_COLOR = 0x845d01
 export const WIN_LINE_THICKNESS = 6
 export const STRIPE_FRAME_TO_SYMBOL_RATIO = 0.84
 export const SPECIAL_SYMBOL_FRAME_COLOR = 0xf5d66a
+export const INFO_IMAGE_HEIGHT = 70
 
 //Data starting state
 export const BETS = [0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 3, 4, 5]

@@ -5,9 +5,10 @@ export function makeImage(url: string) {
     return img
 }
 
-export function makeHorizontalFlexbox() {
-    const div = document.createElement('div')
-    div.classList.add(...['flex-container', 'horizontal'])
+export function makeSpan(text: string, addClass?: string) {
+    const span = document.createElement('span')
+    span.innerText = text
+    if (addClass) span.classList.add(...[addClass])
 
-    return div
+    return span
 }

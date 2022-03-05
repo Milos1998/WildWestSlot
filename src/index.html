@@ -10,15 +10,35 @@
 <body class="flex-container vertical">
     <canvas id="pixi-canvas"></canvas>
     <script src="./app.js"></script>
+
     <div id="filter"  class="scrollable hide">
         <div class="flex-container vertical">
             <div id="filter-items" class="flex-container horizontal"></div>
             <button id="filter-button">X</button>
         </div>
     </div>
+    
     <div id="info" class="scrollable hide">
         <div class="flex-container vertical">
-            <div id="info-items" class="flex-container vertical"></div>
+            <h1>Rules</h1>
+            <p>All line win symbols must appear on played line and on consecutive reels, beginning with the far left reel. 
+                Win amount is calculated as product of bet per line and coeficient for each line. Coeficient is displayed 
+                in pay table, the more matching symbols, the bigger the coeficient.
+            </p>
+
+            <p><img id="wild-img" alt="WILD"> is wildcard and can be matched with any other symbol instead of special symbol.</p>
+            <p><img id="special-img" alt="REWARD 1000"> is special symbol. Special symbols are not counted on lines, 
+                we are counting all appearences. Special symbol's coefficient is multiplied by TOTAL bet.
+            </p>
+            <h1>Pay Table</h1>
+            <div id="pay-table">
+                    <span class="pay-table-item">Symbol</span>
+                    <span class="pay-table-item">5</span>
+                    <span class="pay-table-item">4</span>
+                    <span class="pay-table-item">3</span>
+                    <span class="pay-table-item">2</span>
+                    <span class="pay-table-item">1</span>
+            </div>
             <button id="info-button">X</button>
         </div>
     </div>
