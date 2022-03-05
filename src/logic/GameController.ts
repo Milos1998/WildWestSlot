@@ -159,7 +159,7 @@ class GameController {
         this.slotMachine.linesSelector.disableSelector()
         this.slotMachine.winLines.hideAllLines()
 
-        this.takeMoney(dataController.totalBet)
+        await this.takeMoney(dataController.totalBet)
 
         await this.slotMachine.reelsHolder.spinReels(() => {
             this.slotMachine.spinButton.setStateDisabledSkip()
@@ -175,17 +175,23 @@ class GameController {
         this.slotMachine.cashTray.displayValue = ''
     }
 
-    private takeMoney(amount: number) {
+    private async takeMoney(amount: number) {
         if (dataController.balance < amount) {
-            this.gameOver()
+            alert('insufficient funds')
+            await this.gameOver()
         }
 
         dataController.updateBalance(-amount)
         this.slotMachine.balance.displayValue = dataController.balance
     }
 
-    private gameOver() {
-        //TODO
+    private async gameOver() {
+        this.slotMachine.linesSelector.disableSelector()
+        this.slotMachine.betSelector.disableSelector()
+        this.slotMachine.spinButton.setStateDisabledSkip()
+        this.slotMachine.autoSpinButton.setStateOffDisabled()
+
+        await this.slotMachine.reelsHolder.dance()
     }
 }
 

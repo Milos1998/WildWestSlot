@@ -85,4 +85,11 @@ export default class ReelsHolder extends Container {
     get stripes() {
         return this.reels.map((reel) => reel.stripes)
     }
+
+    public dance() {
+        this.reels.forEach((reel) => dataController.animationSequencer.add(reel.dance(), 0))
+        dataController.animationSequencer.repeat(-1)
+        dataController.animationSequencer.yoyo(true)
+        return dataController.animationSequencer.play()
+    }
 }

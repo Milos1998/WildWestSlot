@@ -18,13 +18,13 @@ export class StripeAnimator {
     private frame: Graphics
     private stripe: Stripe
 
-    constructor(stripe: Stripe, timeline: gsap.core.Timeline, lineColor?: number, mask?: Graphics) {
+    constructor(stripe: Stripe, timeline?: gsap.core.Timeline, lineColor?: number, mask?: Graphics) {
         this.frame = new Graphics()
         this.stripe = stripe
 
         if (mask) this.cropWinLineMask(mask)
         this.makeFrame(lineColor)
-        this.animateStripe(timeline)
+        if (timeline) this.animateStripe(timeline)
     }
 
     private cropWinLineMask(mask: Graphics) {
@@ -87,5 +87,14 @@ export class StripeAnimator {
         amountText.y = (textBackground.height - amountText.height) / 2
 
         this.frame.addChild(textBackground)
+    }
+
+    public shake(timeline: gsap.core.Timeline) {
+        timeline.fromTo(
+            this.stripe.sprite,
+            { duration: 0.1, pixi: { scale: 0.9, rotation: 5 }, ease: 'none' },
+            { duration: 0.1, pixi: { scale: 0.9, rotation: -5 }, ease: 'none' },
+            0
+        )
     }
 }

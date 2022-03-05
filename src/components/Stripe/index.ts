@@ -47,4 +47,9 @@ export default class Stripe extends Container {
     public displayAmount(amount: number) {
         this.stripeAnimator?.displayAmount(amount)
     }
+
+    public dance(timeline: gsap.core.Timeline) {
+        this.stripeAnimator = new StripeAnimator(this)
+        this.stripeAnimator.shake(timeline)
+    }
 }

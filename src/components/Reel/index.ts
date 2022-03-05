@@ -94,4 +94,10 @@ export default class Reel extends Container {
     get stripes() {
         return this._stripes
     }
+
+    public dance() {
+        const timeline = gsap.timeline()
+        this.stripes.forEach((stripe) => stripe.dance(timeline))
+        return timeline
+    }
 }
