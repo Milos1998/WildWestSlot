@@ -34,6 +34,10 @@ export const CENTRAL_PANNEL_Y =
 export const SPIN_BUTTON_X = (APP_WIDTH * 1) / 3 - BUTTONS_SIZE / 2
 export const AUTO_SPIN_BUTTON_X = (APP_WIDTH * 2) / 3 - BUTTONS_SIZE / 2
 export const INFO_BUTTON_PADDING = 20
+export const LOAD_BAR_WIDTH = APP_WIDTH * 0.8
+export const LOAD_BAR_HEIGHT = 50
+export const LOAD_BAR_X = (APP_WIDTH - LOAD_BAR_WIDTH) / 2
+export const LOAD_BAR_Y = APP_HEIGHT * 0.7
 
 //colors and lines
 export const APP_BACKGROUND_COLOR = 0xb45f06
@@ -57,13 +61,15 @@ export const WIN_LINE_THICKNESS = 6
 export const STRIPE_FRAME_TO_SYMBOL_RATIO = 0.84
 export const SPECIAL_SYMBOL_FRAME_COLOR = 0xf5d66a
 export const INFO_IMAGE_HEIGHT = 70
+export const LOAD_BAR_BG_COLOR = 0x0
+export const PROGRESS_BAR_COLOR = 0x110b7a
 
 //Data starting state
 export const BETS = [0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 3, 4, 5]
 export const STARTING_BALANCE = 500
 
 //animation
-export const REEL_SPIN_DELAY = 0.1
+export const REEL_SPIN_DELAY = 0.33
 export const REEL_SPIN_START_ROTATION = 1
 export const REEL_SPIN_MID_ROTATION = 3
 export const REEL_SPIN_END_ROTATION = 1

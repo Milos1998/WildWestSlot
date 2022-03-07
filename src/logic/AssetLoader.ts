@@ -1,6 +1,14 @@
+import { sound } from '@pixi/sound'
 import { Container, Graphics, Loader } from 'pixi.js'
 import { ASSETS } from '../assets'
-import { APP_HEIGHT, APP_WIDTH } from '../constants'
+import {
+    LOAD_BAR_BG_COLOR,
+    LOAD_BAR_HEIGHT,
+    LOAD_BAR_WIDTH,
+    LOAD_BAR_X,
+    LOAD_BAR_Y,
+    PROGRESS_BAR_COLOR
+} from '../constants'
 import gameController from './GameController'
 
 class AssetLoader extends Container {
@@ -12,13 +20,6 @@ class AssetLoader extends Container {
         super()
 
         //setup graphics for progression
-        const LOAD_BAR_WIDTH = APP_WIDTH * 0.8
-        const LOAD_BAR_HEIGHT = 50
-        const LOAD_BAR_X = (APP_WIDTH - LOAD_BAR_WIDTH) / 2
-        const LOAD_BAR_Y = APP_HEIGHT * 0.7
-        const LOAD_BAR_BG_COLOR = 0x0
-        const PROGRESS_BAR_COLOR = 0x110b7a
-
         this.progressBar = new Graphics()
         this.progressBar.beginFill(PROGRESS_BAR_COLOR)
         this.progressBar.drawRect(0, 0, LOAD_BAR_WIDTH, LOAD_BAR_HEIGHT)
@@ -41,6 +42,8 @@ class AssetLoader extends Container {
         this.addChild(this.loadProgressionBar)
 
         //loading assets
+        sound.add('reelStop', '../../assets/mixkit-old-camera-shutter-click-1137.wav')
+
         Loader.shared.add(ASSETS)
 
         Loader.shared.onProgress.add(this.loadingProgress, this)

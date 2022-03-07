@@ -3,7 +3,7 @@ import { ASSETS } from '../../assets'
 import { APP_WIDTH, INFO_BUTTON_PADDING } from '../../constants'
 import { PAYTABLE, Symbols } from '../../constants/winLinesData'
 import dataController from '../../logic/DataController'
-import { makeImage, makeSpan } from './htmlUtils'
+import { makeImage, makeSpan } from '../../utils/htmlUtils'
 
 export class Info extends Sprite {
     private timeoutId = 0

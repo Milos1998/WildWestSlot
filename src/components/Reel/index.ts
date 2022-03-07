@@ -1,3 +1,4 @@
+import { sound } from '@pixi/sound'
 import { gsap } from 'gsap'
 import { Container, Sprite, Texture } from 'pixi.js'
 import {
@@ -76,6 +77,14 @@ export default class Reel extends Container {
                 ease: 'back.out(1.7)',
                 duration: REEL_SPIN_END_ROTATION
             })
+
+        reelTimeline.call(
+            () => {
+                sound.play('reelStop')
+            },
+            undefined,
+            reelTimeline.duration()
+        )
 
         this.forCleanup = [this._stripes.shift() as Stripe]
         this.forCleanup = [...this._stripes.splice(STRIPES_PER_REEL)]

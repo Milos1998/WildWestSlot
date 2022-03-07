@@ -17,9 +17,11 @@ const amountStyle = new TextStyle({
 export class StripeAnimator {
     private frame: Graphics
     private stripe: Stripe
+    private shine: Graphics
 
     constructor(stripe: Stripe, timeline?: gsap.core.Timeline, lineColor?: number, mask?: Graphics) {
         this.frame = new Graphics()
+        this.shine = new Graphics()
         this.stripe = stripe
 
         if (mask) this.cropWinLineMask(mask)
