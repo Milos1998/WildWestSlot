@@ -76,6 +76,7 @@ export default class ReelsHolder extends Container {
 
     private animationCleanup() {
         this.reels.forEach((reel) => reel.animationCleanup())
+        dataController.resetAnimationSequencer()
     }
 
     get symbolsCombination() {

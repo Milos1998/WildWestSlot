@@ -5,11 +5,13 @@ import dataController from '../../logic/DataController'
 import { Symbols } from '../../constants/winLinesData'
 import gsap from 'gsap'
 import Stripe from '../Stripe'
+import { sound } from '@pixi/sound'
 
 export default class WinLines extends Container {
     private lines: Graphics[] = []
     private myWidth = 0
     private myHeight = 0
+    private masterTimeline: gsap.core.Timeline | undefined = undefined
 
     constructor(x: number, y: number, width: number, height: number) {
         super()
@@ -55,27 +57,19 @@ export default class WinLines extends Container {
         for (let i = 0; i < this.lines.length; i++) this.lines[i].visible = false
     }
 
-    public async startWinningLinesAnimation(stripes: Stripe[][]) {
-        this.queueWinningLinesAnimation(stripes)
-
-        return dataController.animationSequencer.play('animateWinSymbols').then(() => {
-            dataController.resetAnimationSequencer()
-        })
-    }
-
     public stopWinningLinesAnimation() {
         dataController.animationSequencer.repeat(0)
         dataController.animationSequencer.seek('endAnimateWinSymbols', false)
     }
 
-    private queueWinningLinesAnimation(stripes: Stripe[][]) {
+    public queueWinningLinesAnimation(stripes: Stripe[][]) {
         const wins = [...dataController.wins].sort((w1, w2) => w2.winAmount - w1.winAmount)
 
-        dataController.animationSequencer.addLabel('animateWinSymbols')
+        this.masterTimeline = gsap.timeline()
 
         for (const win of wins) {
             const timeline = gsap.timeline()
-            dataController.animationSequencer.add(timeline)
+            this.masterTimeline.add(timeline)
 
             if (win.winSymbol === Symbols.Reward1000) {
                 this.queueSpecialsAnimation(timeline, win.winAmount, stripes)
@@ -100,9 +94,9 @@ export default class WinLines extends Container {
             this.toggleMaskVisibility(false, timeline, this.lines[win.winLine], mask, timeline.duration())
         }
 
-        dataController.animationSequencer.repeat(-1)
-        dataController.animationSequencer.pause()
-        dataController.animationSequencer.addLabel('endAnimateWinSymbols', dataController.animationSequencer.duration())
+        this.masterTimeline.repeat(-1)
+
+        return this.masterTimeline
     }
 
     private queueSpecialsAnimation(timeline: gsap.core.Timeline, winAmount: number, stripes: Stripe[][]) {
@@ -114,6 +108,14 @@ export default class WinLines extends Container {
                 }
             }
         }
+
+        timeline.call(
+            () => {
+                sound.play('specials theme') //TODO
+            },
+            undefined,
+            0
+        )
     }
 
     private toggleMaskVisibility(

@@ -1,4 +1,3 @@
-import { sound } from '@pixi/sound'
 import { Container, Graphics, Loader } from 'pixi.js'
 import { ASSETS } from '../assets'
 import {
@@ -42,8 +41,6 @@ class AssetLoader extends Container {
         this.addChild(this.loadProgressionBar)
 
         //loading assets
-        sound.add('reelStop', '../../assets/mixkit-old-camera-shutter-click-1137.wav')
-
         Loader.shared.add(ASSETS)
 
         Loader.shared.onProgress.add(this.loadingProgress, this)

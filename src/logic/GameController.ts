@@ -41,7 +41,15 @@ class GameController {
     }
 
     private applySpecialProperties() {
-        const filterSymbols = [Symbols.NINE, Symbols.TEN, Symbols.J, Symbols.K, Symbols.Q, Symbols.A]
+        const filterSymbols = [
+            Symbols.NINE,
+            Symbols.TEN,
+            Symbols.J,
+            Symbols.K,
+            Symbols.Q,
+            Symbols.A,
+            Symbols.Reward1000
+        ]
         filterSymbols.forEach((sym) => dataController.filterStripeSymbols(sym, false))
     }
 
@@ -95,11 +103,13 @@ class GameController {
 
     public async spinAutomatiaclly() {
         this.slotMachine.autoSpinButton.setStateOn()
+        dataController.autoSpinning = true
 
         while (dataController.autoSpinButtonState === AutoSpinBtnState.On) {
             await this.spin()
         }
 
+        dataController.autoSpinning = false
         this.slotMachine.autoSpinButton.setStateOffEnabled()
         this.slotMachine.spinButton.setStateNeutral()
         this.slotMachine.betSelector.enableSelector()
@@ -150,7 +160,7 @@ class GameController {
     public collectCash() {
         dataController.updateBalance(dataController.totalCashWin)
         this.slotMachine.balance.displayValue = dataController.balance
-        this.slotMachine.winLines.stopWinningLinesAnimation()
+        this.slotMachine.stopWinAnimation()
     }
 
     private async spin() {
@@ -168,8 +178,7 @@ class GameController {
         winCalculator.calculateWin()
         if (dataController.totalCashWin) {
             this.slotMachine.spinButton.setStateCollect()
-            this.slotMachine.cashTray.displayValue = dataController.totalCashWin
-            await this.slotMachine.winLines.startWinningLinesAnimation(this.slotMachine.reelsHolder.stripes)
+            await this.slotMachine.animateWin()
         }
 
         this.slotMachine.cashTray.displayValue = ''

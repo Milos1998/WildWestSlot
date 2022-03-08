@@ -1,3 +1,4 @@
+import gsap from 'gsap/all'
 import { Graphics, Sprite, TextStyle, Text } from 'pixi.js'
 import {
     DISPLAYS_COLOR,
@@ -22,7 +23,7 @@ const displayValueStyle = new TextStyle({
 
 export default class Display extends Graphics {
     private description: Text
-    private _displayValue: Text
+    public _displayValue: Text
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     public moreButton: Sprite = undefined as any
@@ -120,5 +121,18 @@ export default class Display extends Graphics {
         this.moreButton.y = this.height / 2 - DISPLAYS_FRAME_THICKNESS
         this.interactive = true
         this.addChild(this.moreButton)
+    }
+
+    public queueDisplayValueChangeAnimation(newValue: number) {
+        const timeline = gsap.timeline()
+
+        this._displayValue
+        timeline.to(this._displayValue, {
+            pixi: { text: newValue },
+            snap: { 'pixi.text': 0.01 },
+            duration: 2
+        })
+
+        return timeline
     }
 }

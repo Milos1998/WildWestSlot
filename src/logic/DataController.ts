@@ -16,6 +16,7 @@ class DataController {
     public symbolCombination: string[][] = []
     public totalCashWin = 0
     public wins: WinObject[] = []
+    public autoSpinning = false
 
     private constructor() {
         this.animationSequencer = gsap.timeline()

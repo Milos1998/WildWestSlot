@@ -73,6 +73,7 @@ export const REEL_SPIN_DELAY = 0.33
 export const REEL_SPIN_START_ROTATION = 1
 export const REEL_SPIN_MID_ROTATION = 3
 export const REEL_SPIN_END_ROTATION = 1
+export const CASH_TRAY_ANIMATION_END_PAUSE = 1000
 
 //enums
 export enum SpinBtnState {

@@ -16,7 +16,8 @@ import {
     RIGHT_PANNEL_X,
     SPIN_BUTTON_X,
     TOTAL_BET_DISPLAY_Y,
-    AUTO_SPIN_BUTTON_X
+    AUTO_SPIN_BUTTON_X,
+    CASH_TRAY_ANIMATION_END_PAUSE
 } from '../../constants'
 import dataController from '../../logic/DataController'
 import gameController from '../../logic/GameController'
@@ -116,5 +117,37 @@ export default class SlotMachine extends Container {
 
         this.infoButton = new Info()
         this.addChild(this.infoButton)
+    }
+
+    public async animateWin() {
+        this.queueWinAnimations()
+
+        return dataController.animationSequencer.play(0)
+    }
+
+    private queueWinAnimations() {
+        dataController.animationSequencer.add(this.winLines.queueWinningLinesAnimation(this.reelsHolder.stripes))
+
+        const cashTrayAnimation = this.cashTray.queueDisplayValueChangeAnimation(dataController.totalCashWin)
+
+        if (dataController.autoSpinning)
+            cashTrayAnimation.call(
+                () => {
+                    setTimeout(() => {
+                        this.stopWinAnimation()
+                    }, CASH_TRAY_ANIMATION_END_PAUSE)
+                },
+                undefined,
+                cashTrayAnimation.duration()
+            )
+
+        dataController.animationSequencer.add(cashTrayAnimation, 0)
+
+        dataController.animationSequencer.pause()
+    }
+
+    public stopWinAnimation() {
+        dataController.animationSequencer.pause().progress(1)
+        dataController.resetAnimationSequencer()
     }
 }

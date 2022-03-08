@@ -21,5 +21,7 @@ export const ASSETS = [
     { name: 'skip-animation', url: './assets/skip-animation.png' },
     { name: 'spin', url: './assets/spin.png' },
     { name: 'auto-spin', url: './assets/auto-spin.png' },
-    { name: 'info', url: './assets/information.png' }
+    { name: 'info', url: './assets/information.png' },
+    { name: 'reel stopping', url: './assets/reelStop.wav' },
+    { name: 'specials theme', url: './assets/The good the bad and the ugly - short.mp3' }
 ]

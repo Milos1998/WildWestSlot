@@ -80,7 +80,7 @@ export default class Reel extends Container {
 
         reelTimeline.call(
             () => {
-                sound.play('reelStop')
+                sound.play('reel stopping')
             },
             undefined,
             reelTimeline.duration()
