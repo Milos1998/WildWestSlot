@@ -1,4 +1,3 @@
-import { gsap } from 'gsap'
 import { AutoSpinBtnState, BETS, SpinBtnState, STARTING_BALANCE } from '../constants'
 import { Symbols, WIN_LINES_DATA } from '../constants/winLinesData'
 import { WinObject } from './WinCalculator'
@@ -12,14 +11,12 @@ class DataController {
     private _balance = STARTING_BALANCE
     public spinButtonState: SpinBtnState = SpinBtnState.Neutral
     public autoSpinButtonState: AutoSpinBtnState = AutoSpinBtnState.OffEnabled
-    public animationSequencer
     public symbolCombination: string[][] = []
     public totalCashWin = 0
     public wins: WinObject[] = []
     public autoSpinning = false
 
     private constructor() {
-        this.animationSequencer = gsap.timeline()
         this.initStripeSymbols()
         this.resetStripeSymbolFilter()
     }
@@ -53,11 +50,6 @@ class DataController {
 
     public resetStripeSymbolFilter() {
         this.filteredStripeSymbols = [...this.stripeSymbols]
-    }
-
-    public resetAnimationSequencer() {
-        this.animationSequencer.kill()
-        this.animationSequencer = gsap.timeline()
     }
 
     get maxNumberOfLines() {

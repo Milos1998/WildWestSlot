@@ -1,3 +1,4 @@
+import gsap from 'gsap/all'
 import { Container, Sprite } from 'pixi.js'
 import {
     BALANCE_Y,
@@ -41,6 +42,7 @@ export default class SlotMachine extends Container {
     public autoSpinButton: AutoSpinButton
     public winLines: WinLines
     private infoButton: Info
+    private mainTimeline: gsap.core.Timeline
 
     constructor() {
         super()
@@ -117,37 +119,52 @@ export default class SlotMachine extends Container {
 
         this.infoButton = new Info()
         this.addChild(this.infoButton)
+
+        this.mainTimeline = gsap.timeline()
     }
 
     public async animateWin() {
         this.queueWinAnimations()
 
-        return dataController.animationSequencer.play(0)
+        return this.mainTimeline.play()
     }
 
     private queueWinAnimations() {
-        dataController.animationSequencer.add(this.winLines.queueWinningLinesAnimation(this.reelsHolder.stripes))
+        const winlinesAnimation = this.winLines.queueWinningLinesAnimation(this.reelsHolder.stripes)
 
-        const cashTrayAnimation = this.cashTray.queueDisplayValueChangeAnimation(dataController.totalCashWin)
+        let cashAnimationDuration: number
+        if (dataController.totalCashWin < 2 * dataController.totalBet) cashAnimationDuration = 1
+        else if (dataController.totalCashWin < 5 * dataController.totalBet) cashAnimationDuration = 2
+        else cashAnimationDuration = 4
 
-        if (dataController.autoSpinning)
-            cashTrayAnimation.call(
-                () => {
-                    setTimeout(() => {
-                        this.stopWinAnimation()
-                    }, CASH_TRAY_ANIMATION_END_PAUSE)
-                },
-                undefined,
-                cashTrayAnimation.duration()
-            )
+        const cashTrayAnimation = this.cashTray.queueDisplayValueChangeAnimation(
+            dataController.totalCashWin,
+            cashAnimationDuration
+        )
 
-        dataController.animationSequencer.add(cashTrayAnimation, 0)
+        cashTrayAnimation.call(
+            () => {
+                setTimeout(() => {
+                    if (dataController.autoSpinning) this.stopWinAnimation()
+                }, CASH_TRAY_ANIMATION_END_PAUSE)
+            },
+            undefined,
+            cashTrayAnimation.duration()
+        )
 
-        dataController.animationSequencer.pause()
+        this.mainTimeline.add(winlinesAnimation)
+        this.mainTimeline.add(cashTrayAnimation, 0)
     }
 
     public stopWinAnimation() {
-        dataController.animationSequencer.pause().progress(1)
-        dataController.resetAnimationSequencer()
+        this.winLines.stopWinningLinesAnimation()
+        this.cashTray.stopDisplayValueChangeAnimation()
+        this.mainTimeline.pause().progress(1)
+        this.resetMainTimeline()
+    }
+
+    private resetMainTimeline() {
+        this.mainTimeline.kill()
+        this.mainTimeline = gsap.timeline()
     }
 }

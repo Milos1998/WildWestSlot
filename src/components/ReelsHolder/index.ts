@@ -1,3 +1,4 @@
+import gsap from 'gsap/all'
 import { Container, Graphics } from 'pixi.js'
 import {
     REELS_HOLDER_FRAME_THICKNESS,
@@ -12,6 +13,7 @@ import Reel from '../Reel'
 
 export default class ReelsHolder extends Container {
     private reels: Reel[]
+    private mainTimeline: gsap.core.Timeline
 
     constructor(x: number, y: number, width: number, height: number) {
         super()
@@ -33,6 +35,8 @@ export default class ReelsHolder extends Container {
         }
 
         this.makeReelsPretty()
+
+        this.mainTimeline = gsap.timeline()
     }
 
     private makeReelsPretty() {
@@ -45,38 +49,37 @@ export default class ReelsHolder extends Container {
     public async spinReels(onReelsStopping: () => void) {
         this.queueSpinReelsAnimation()
 
-        dataController.animationSequencer.call(onReelsStopping, undefined, 'reelsStopping')
-        return dataController.animationSequencer.play('spinReels').then(() => {
-            dataController.resetAnimationSequencer()
+        this.mainTimeline.call(onReelsStopping, undefined, 'reelsStopping')
+
+        return this.mainTimeline.play('spinReels').then(() => {
+            this.resetMainTimeline()
+            this.animationCleanup()
         })
     }
 
     public slamStopAnimation() {
-        dataController.animationSequencer.seek('reelsStopping', false)
+        this.mainTimeline.seek('reelsStopping', false)
     }
 
     private queueSpinReelsAnimation() {
-        dataController.animationSequencer.addLabel('spinReels')
+        this.mainTimeline.addLabel('spinReels')
 
         for (let i = 0; i < this.reels.length; i++) {
-            dataController.animationSequencer.add(this.reels[i].queueReelAnimation(), `${i * REEL_SPIN_DELAY}`)
+            this.mainTimeline.add(this.reels[i].queueReelAnimation(), `${i * REEL_SPIN_DELAY}`)
         }
 
-        dataController.animationSequencer.addLabel('reelsStopping', REEL_SPIN_START_ROTATION + REEL_SPIN_MID_ROTATION)
-        dataController.animationSequencer.pause()
+        this.mainTimeline.addLabel('reelsStopping', REEL_SPIN_START_ROTATION + REEL_SPIN_MID_ROTATION)
+        this.mainTimeline.pause()
         dataController.symbolCombination = this.symbolsCombination
-        dataController.animationSequencer.call(
-            () => {
-                this.animationCleanup()
-            },
-            undefined,
-            dataController.animationSequencer.duration()
-        )
+    }
+
+    private resetMainTimeline() {
+        this.mainTimeline.kill()
+        this.mainTimeline = gsap.timeline()
     }
 
     private animationCleanup() {
         this.reels.forEach((reel) => reel.animationCleanup())
-        dataController.resetAnimationSequencer()
     }
 
     get symbolsCombination() {
@@ -87,10 +90,12 @@ export default class ReelsHolder extends Container {
         return this.reels.map((reel) => reel.stripes)
     }
 
-    public dance() {
-        this.reels.forEach((reel) => dataController.animationSequencer.add(reel.dance(), 0))
-        dataController.animationSequencer.repeat(-1)
-        dataController.animationSequencer.yoyo(true)
-        return dataController.animationSequencer.play()
+    public async dance() {
+        this.reels.forEach((reel) => this.mainTimeline.add(reel.dance(), 0))
+        this.mainTimeline.repeat(-1)
+        this.mainTimeline.yoyo(true)
+        return this.mainTimeline.play().then(() => {
+            this.resetMainTimeline()
+        })
     }
 }

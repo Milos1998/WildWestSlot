@@ -11,7 +11,7 @@ export default class WinLines extends Container {
     private lines: Graphics[] = []
     private myWidth = 0
     private myHeight = 0
-    private masterTimeline: gsap.core.Timeline | undefined = undefined
+    private mainTimeline: gsap.core.Timeline
 
     constructor(x: number, y: number, width: number, height: number) {
         super()
@@ -40,6 +40,7 @@ export default class WinLines extends Container {
         }
 
         this.hideAllLines()
+        this.mainTimeline = gsap.timeline()
     }
 
     public displayOnlySelectedLines() {
@@ -58,18 +59,21 @@ export default class WinLines extends Container {
     }
 
     public stopWinningLinesAnimation() {
-        dataController.animationSequencer.repeat(0)
-        dataController.animationSequencer.seek('endAnimateWinSymbols', false)
+        this.mainTimeline.repeat(0).seek(this.mainTimeline.duration(), false)
+        this.resetMainTimeline()
+    }
+
+    private resetMainTimeline() {
+        this.mainTimeline.kill()
+        this.mainTimeline = gsap.timeline()
     }
 
     public queueWinningLinesAnimation(stripes: Stripe[][]) {
         const wins = [...dataController.wins].sort((w1, w2) => w2.winAmount - w1.winAmount)
 
-        this.masterTimeline = gsap.timeline()
-
         for (const win of wins) {
             const timeline = gsap.timeline()
-            this.masterTimeline.add(timeline)
+            this.mainTimeline.add(timeline)
 
             if (win.winSymbol === Symbols.Reward1000) {
                 this.queueSpecialsAnimation(timeline, win.winAmount, stripes)
@@ -94,9 +98,9 @@ export default class WinLines extends Container {
             this.toggleMaskVisibility(false, timeline, this.lines[win.winLine], mask, timeline.duration())
         }
 
-        this.masterTimeline.repeat(-1)
+        this.mainTimeline.repeat(-1)
 
-        return this.masterTimeline
+        return this.mainTimeline
     }
 
     private queueSpecialsAnimation(timeline: gsap.core.Timeline, winAmount: number, stripes: Stripe[][]) {

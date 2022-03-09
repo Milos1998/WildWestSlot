@@ -23,16 +23,13 @@ const displayValueStyle = new TextStyle({
 
 export default class Display extends Graphics {
     private description: Text
-    public _displayValue: Text
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public moreButton: Sprite = undefined as any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public lessButton: Sprite = undefined as any
-
+    private _displayValue: Text
+    private _moreButton: Sprite | undefined = undefined
+    private _lessButton: Sprite | undefined = undefined
     private wasMoreActive = false
     private wasLessActive = false
     private wasDisabledBefore = false
+    private mainTimeline: gsap.core.Timeline
 
     constructor(
         x: number,
@@ -66,6 +63,7 @@ export default class Display extends Graphics {
         this.addChild(this.description, this._displayValue)
 
         if (isSelector) this.initSelectorButtons()
+        this.mainTimeline = gsap.timeline()
     }
 
     set displayValue(newDisplayValue: string | number) {
@@ -73,30 +71,46 @@ export default class Display extends Graphics {
         this._displayValue.text = newDisplayValue
     }
 
+    get lessButton() {
+        if (!this._lessButton) throw new Error('missing less button')
+        return this._lessButton
+    }
+
+    get moreButton() {
+        if (!this._moreButton) throw new Error('missing more button')
+        return this._moreButton
+    }
+
     public disableLessButton() {
-        this.lessButton.interactive = false
-        this.lessButton.tint = DISPLAYS_DISABLED_BUTTON_COLOR
+        if (!this._lessButton) throw new Error('missing less button')
+        this._lessButton.interactive = false
+        this._lessButton.tint = DISPLAYS_DISABLED_BUTTON_COLOR
     }
 
     public enableLessButton() {
-        this.lessButton.interactive = true
-        this.lessButton.tint = 0xffffff
+        if (!this._lessButton) throw new Error('missing less button')
+        this._lessButton.interactive = true
+        this._lessButton.tint = 0xffffff
     }
 
     public disableMoreButton() {
-        this.moreButton.interactive = false
-        this.moreButton.tint = DISPLAYS_DISABLED_BUTTON_COLOR
+        if (!this._moreButton) throw new Error('missing more button')
+        this._moreButton.interactive = false
+        this._moreButton.tint = DISPLAYS_DISABLED_BUTTON_COLOR
     }
 
     public enableMoreButton() {
-        this.moreButton.interactive = true
-        this.moreButton.tint = 0xffffff
+        if (!this._moreButton) throw new Error('missing more button')
+        this._moreButton.interactive = true
+        this._moreButton.tint = 0xffffff
     }
 
     public disableSelector() {
-        if (!this.wasDisabledBefore) this.wasLessActive = this.lessButton.interactive
+        if (!this._moreButton || !this._lessButton) throw new Error('missing buttons')
+
+        if (!this.wasDisabledBefore) this.wasLessActive = this._lessButton.interactive
         this.disableLessButton()
-        if (!this.wasDisabledBefore) this.wasMoreActive = this.moreButton.interactive
+        if (!this.wasDisabledBefore) this.wasMoreActive = this._moreButton.interactive
         this.disableMoreButton()
         this.wasDisabledBefore = true
     }
@@ -108,31 +122,43 @@ export default class Display extends Graphics {
     }
 
     private initSelectorButtons() {
-        this.lessButton = Sprite.from('minus')
-        this.lessButton.anchor.set(0, 0.5)
-        this.lessButton.x = 8 - DISPLAYS_FRAME_THICKNESS
-        this.lessButton.y = this.height / 2 - DISPLAYS_FRAME_THICKNESS
+        this._lessButton = Sprite.from('minus')
+        this._lessButton.anchor.set(0, 0.5)
+        this._lessButton.x = 8 - DISPLAYS_FRAME_THICKNESS
+        this._lessButton.y = this.height / 2 - DISPLAYS_FRAME_THICKNESS
         this.interactive = true
-        this.addChild(this.lessButton)
+        this.addChild(this._lessButton)
 
-        this.moreButton = Sprite.from('plus')
-        this.moreButton.anchor.set(1, 0.5)
-        this.moreButton.x = this.width - 8
-        this.moreButton.y = this.height / 2 - DISPLAYS_FRAME_THICKNESS
+        this._moreButton = Sprite.from('plus')
+        this._moreButton.anchor.set(1, 0.5)
+        this._moreButton.x = this.width - 8
+        this._moreButton.y = this.height / 2 - DISPLAYS_FRAME_THICKNESS
         this.interactive = true
-        this.addChild(this.moreButton)
+        this.addChild(this._moreButton)
     }
 
-    public queueDisplayValueChangeAnimation(newValue: number) {
-        const timeline = gsap.timeline()
+    public queueDisplayValueChangeAnimation(newValue: number, duration: number) {
+        this.mainTimeline = gsap.timeline()
 
-        this._displayValue
-        timeline.to(this._displayValue, {
+        this.mainTimeline.to(this._displayValue, {
             pixi: { text: newValue },
-            snap: { 'pixi.text': 0.01 },
-            duration: 2
+            duration: duration,
+            onUpdate: function () {
+                const fixedPositions = newValue % 1 === 0 ? 0 : 2
+                this.targets()[0].text = Number.parseFloat(this.targets()[0].text).toFixed(fixedPositions).toString()
+            }
         })
 
-        return timeline
+        return this.mainTimeline
+    }
+
+    public stopDisplayValueChangeAnimation() {
+        this.mainTimeline.progress(1)
+        this.resetMainTimeline()
+    }
+
+    private resetMainTimeline() {
+        this.mainTimeline.kill()
+        this.mainTimeline = gsap.timeline()
     }
 }
