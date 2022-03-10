@@ -27,7 +27,7 @@ class GameController {
 
     public initGameController(_app: Application) {
         this.app = _app
-        this.app.stage.addChild(assetLoader)
+        this.app.stage.addChild(assetLoader.initAssetLoader())
     }
 
     //get's called from Loader when caching is finished

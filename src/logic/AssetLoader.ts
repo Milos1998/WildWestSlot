@@ -18,8 +18,12 @@ class AssetLoader extends Container {
     private constructor() {
         super()
 
-        //setup graphics for progression
+        this.loadProgressionBar = new Graphics()
         this.progressBar = new Graphics()
+    }
+
+    public initAssetLoader() {
+        //setup graphics for progression
         this.progressBar.beginFill(PROGRESS_BAR_COLOR)
         this.progressBar.drawRect(0, 0, LOAD_BAR_WIDTH, LOAD_BAR_HEIGHT)
         this.progressBar.x = LOAD_BAR_X
@@ -29,7 +33,6 @@ class AssetLoader extends Container {
 
         this.addChild(this.progressBar)
 
-        this.loadProgressionBar = new Graphics()
         this.loadProgressionBar.beginFill(LOAD_BAR_BG_COLOR, 0.1)
         this.loadProgressionBar.lineStyle(5, 0x0)
 
@@ -47,6 +50,8 @@ class AssetLoader extends Container {
         Loader.shared.onComplete.once(this.loadingCompleted, this)
 
         Loader.shared.load()
+
+        return this
     }
 
     static get instance() {

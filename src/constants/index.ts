@@ -69,7 +69,7 @@ export const BETS = [0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 3, 4, 5]
 export const STARTING_BALANCE = 500
 
 //animation
-export const REEL_SPIN_DELAY = 0.33
+export const REEL_SPIN_DELAY = 0.15
 export const REEL_SPIN_START_ROTATION = 1
 export const REEL_SPIN_MID_ROTATION = 3
 export const REEL_SPIN_END_ROTATION = 1
