@@ -137,7 +137,7 @@ export default class Display extends Graphics {
         this.addChild(this._moreButton)
     }
 
-    public queueDisplayValueChangeAnimation(newValue: number, duration: number) {
+    public queueDisplayValueChangeAnimation(newValue: number, duration: number, sound: () => void) {
         this.mainTimeline = gsap.timeline()
 
         this.mainTimeline.to(this._displayValue, {
@@ -148,6 +148,8 @@ export default class Display extends Graphics {
                 this.targets()[0].text = Number.parseFloat(this.targets()[0].text).toFixed(fixedPositions).toString()
             }
         })
+
+        this.mainTimeline.call(sound, undefined, 0)
 
         return this.mainTimeline
     }

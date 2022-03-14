@@ -1,4 +1,4 @@
-import { REELS_PER_REEL_HOLDER } from '../constants'
+import ReelsHolder from '../components/ReelsHolder'
 import { PAYTABLE, Symbols, WIN_LINES_DATA } from '../constants/winLinesData'
 import dataController from './DataController'
 
@@ -20,20 +20,20 @@ class WinCalculator {
         return WinCalculator._instance
     }
 
-    public calculateWin() {
+    public calculateWin(reelsHolder: ReelsHolder) {
         this.wins = []
         this.totalWinAmount = 0
 
-        this.calculateMatches()
-        this.calculateSpecials()
+        this.calculateMatches(reelsHolder)
+        this.calculateSpecials(reelsHolder)
         this.calculateWinAmounts()
 
         dataController.wins = this.wins
         dataController.totalCashWin = this.totalWinAmount
     }
 
-    private calculateMatches() {
-        const symbolCombination = dataController.symbolCombination
+    private calculateMatches(reelsHolder: ReelsHolder) {
+        const symbolCombination = reelsHolder.symbolsCombination
         for (let currentLine = 0; currentLine < dataController.numberOfLines; currentLine++) {
             const wp = WIN_LINES_DATA[currentLine].winPositions
 
@@ -44,7 +44,7 @@ class WinCalculator {
             win.winSymbol = first
             win.winLine = currentLine
 
-            for (let currentReel = 1; currentReel < REELS_PER_REEL_HOLDER; currentReel++) {
+            for (let currentReel = 1; currentReel < reelsHolder.numOfReels; currentReel++) {
                 if (this.isMatching(symbolCombination[currentReel][wp[currentReel]], win)) {
                     win.numberOfMatches++
                 } else {
@@ -80,8 +80,8 @@ class WinCalculator {
         }
     }
 
-    private calculateSpecials() {
-        const symbolCombination = dataController.symbolCombination
+    private calculateSpecials(reelsHolder: ReelsHolder) {
+        const symbolCombination = reelsHolder.symbolsCombination
 
         const win = new WinObject()
         win.winSymbol = Symbols.Reward1000
@@ -92,7 +92,7 @@ class WinCalculator {
             }
         }
 
-        if (found > REELS_PER_REEL_HOLDER) found = REELS_PER_REEL_HOLDER
+        if (found > reelsHolder.numOfReels) found = reelsHolder.numOfReels
 
         win.numberOfMatches = found - 1
         if (found) this.wins.push(win)

@@ -11,18 +11,21 @@ import {
     LEFT_PANNEL_X,
     LINES_SELECTOR_Y,
     REELS_HOLDER_HEIGHT,
-    REELS_HOLDER_WIDTH,
+    reelsHolderWidth,
     REELS_HOLDER_X,
     REELS_HOLDER_Y,
     RIGHT_PANNEL_X,
     SPIN_BUTTON_X,
     TOTAL_BET_DISPLAY_Y,
     AUTO_SPIN_BUTTON_X,
-    CASH_TRAY_ANIMATION_END_PAUSE
+    CASH_TRAY_ANIMATION_END_PAUSE,
+    REELS_PER_REEL_HOLDER
 } from '../../constants'
 import dataController from '../../logic/DataController'
 import gameController from '../../logic/GameController'
+import soundController from '../../logic/SoundController'
 import AutoSpinButton from '../AutoSpinButton'
+import BonusSpin from '../BonusSpin.ts'
 import Display from '../Display'
 import { Info } from '../Info'
 import ReelsHolder from '../ReelsHolder'
@@ -43,6 +46,7 @@ export default class SlotMachine extends Container {
     public winLines: WinLines
     private infoButton: Info
     private mainTimeline: gsap.core.Timeline
+    public bonusSpin: BonusSpin
 
     constructor() {
         super()
@@ -54,11 +58,23 @@ export default class SlotMachine extends Container {
         this.addChild(this.machineDecoration)
 
         //reels holder
-        this.reelsHolder = new ReelsHolder(REELS_HOLDER_X, REELS_HOLDER_Y, REELS_HOLDER_WIDTH, REELS_HOLDER_HEIGHT)
+        this.reelsHolder = new ReelsHolder(
+            REELS_HOLDER_X,
+            REELS_HOLDER_Y,
+            reelsHolderWidth(REELS_PER_REEL_HOLDER),
+            REELS_HOLDER_HEIGHT,
+            REELS_PER_REEL_HOLDER
+        )
         this.addChild(this.reelsHolder)
 
         //winlines
-        this.winLines = new WinLines(REELS_HOLDER_X, REELS_HOLDER_Y, REELS_HOLDER_WIDTH, REELS_HOLDER_HEIGHT)
+        this.winLines = new WinLines(
+            REELS_HOLDER_X,
+            REELS_HOLDER_Y,
+            reelsHolderWidth(REELS_PER_REEL_HOLDER),
+            REELS_HOLDER_HEIGHT,
+            REELS_PER_REEL_HOLDER
+        )
         this.addChild(this.winLines)
 
         //left pannel
@@ -120,6 +136,9 @@ export default class SlotMachine extends Container {
         this.infoButton = new Info()
         this.addChild(this.infoButton)
 
+        this.bonusSpin = new BonusSpin()
+        this.addChild(this.bonusSpin)
+
         this.mainTimeline = gsap.timeline()
     }
 
@@ -139,7 +158,10 @@ export default class SlotMachine extends Container {
 
         const cashTrayAnimation = this.cashTray.queueDisplayValueChangeAnimation(
             dataController.totalCashWin,
-            cashAnimationDuration
+            cashAnimationDuration,
+            () => {
+                soundController.playCoinDrop()
+            }
         )
 
         cashTrayAnimation.call(

@@ -8,6 +8,7 @@ import winCalculator from './WinCalculator'
 import { Symbols } from '../constants/winLinesData'
 import { AutoSpinBtnState, SpinBtnState } from '../constants'
 import assetLoader from './AssetLoader'
+import soundController from './SoundController'
 
 //Syncs processes of the game
 class GameController {
@@ -38,6 +39,7 @@ class GameController {
 
         this.slotMachine = new SlotMachine()
         this.app.stage.addChild(this.slotMachine)
+        soundController.playBackgroundSong()
     }
 
     private applySpecialProperties() {
@@ -175,7 +177,7 @@ class GameController {
             this.slotMachine.spinButton.setStateDisabledSkip()
         })
 
-        winCalculator.calculateWin()
+        winCalculator.calculateWin(this.slotMachine.reelsHolder)
         if (dataController.totalCashWin) {
             this.slotMachine.spinButton.setStateCollect()
             await this.slotMachine.animateWin()

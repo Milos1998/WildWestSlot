@@ -1,11 +1,11 @@
 import { Container, Graphics } from 'pixi.js'
-import { REELS_HOLDER_FRAME_THICKNESS, REELS_PER_REEL_HOLDER, STRIPE_SIZE, WIN_LINE_THICKNESS } from '../../constants'
+import { REELS_HOLDER_FRAME_THICKNESS, STRIPE_SIZE, WIN_LINE_THICKNESS } from '../../constants'
 import { LINE_COLORS, LINE_OFFSETS, WIN_LINES_DATA } from '../../constants/winLinesData'
 import dataController from '../../logic/DataController'
 import { Symbols } from '../../constants/winLinesData'
 import gsap from 'gsap'
 import Stripe from '../Stripe'
-import { sound } from '@pixi/sound'
+import soundController from '../../logic/SoundController'
 
 export default class WinLines extends Container {
     private lines: Graphics[] = []
@@ -13,7 +13,7 @@ export default class WinLines extends Container {
     private myHeight = 0
     private mainTimeline: gsap.core.Timeline
 
-    constructor(x: number, y: number, width: number, height: number) {
+    constructor(x: number, y: number, width: number, height: number, numOfReels: number) {
         super()
 
         this.x = x - REELS_HOLDER_FRAME_THICKNESS
@@ -31,7 +31,7 @@ export default class WinLines extends Container {
             let offsetX = STRIPE_SIZE / 2 + REELS_HOLDER_FRAME_THICKNESS
             line.moveTo(0, wld.winPositions[0] * STRIPE_SIZE + offsetY)
             let j
-            for (j = 0; j < REELS_PER_REEL_HOLDER; j++) {
+            for (j = 0; j < numOfReels; j++) {
                 offsetX += REELS_HOLDER_FRAME_THICKNESS
                 line.lineTo(j * STRIPE_SIZE + offsetX, wld.winPositions[j] * STRIPE_SIZE + offsetY)
             }
@@ -115,7 +115,7 @@ export default class WinLines extends Container {
 
         timeline.call(
             () => {
-                sound.play('specials theme') //TODO
+                soundController.playSpecialsTheme()
             },
             undefined,
             0

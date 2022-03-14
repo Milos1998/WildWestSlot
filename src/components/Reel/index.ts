@@ -1,4 +1,3 @@
-import { sound } from '@pixi/sound'
 import { gsap } from 'gsap'
 import { Container, Sprite, Texture } from 'pixi.js'
 import {
@@ -8,6 +7,7 @@ import {
     STRIPES_PER_REEL,
     STRIPE_SIZE
 } from '../../constants'
+import soundController from '../../logic/SoundController'
 import Stripe from '../Stripe'
 
 export default class Reel extends Container {
@@ -80,7 +80,7 @@ export default class Reel extends Container {
 
         reelTimeline.call(
             () => {
-                sound.play('reel stopping')
+                soundController.playReelStopping()
             },
             undefined,
             reelTimeline.duration()

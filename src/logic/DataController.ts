@@ -11,7 +11,6 @@ class DataController {
     private _balance = STARTING_BALANCE
     public spinButtonState: SpinBtnState = SpinBtnState.Neutral
     public autoSpinButtonState: AutoSpinBtnState = AutoSpinBtnState.OffEnabled
-    public symbolCombination: string[][] = []
     public totalCashWin = 0
     public wins: WinObject[] = []
     public autoSpinning = false

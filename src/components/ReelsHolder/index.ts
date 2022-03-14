@@ -15,8 +15,10 @@ export default class ReelsHolder extends Container {
     private reels: Reel[]
     private mainTimeline: gsap.core.Timeline
 
-    constructor(x: number, y: number, width: number, height: number) {
+    constructor(x: number, y: number, width: number, height: number, numOfReels: number) {
         super()
+
+        if (numOfReels < 2 || numOfReels > REELS_PER_REEL_HOLDER) throw new Error('number of reels out of range')
 
         this.x = x
         this.y = y
@@ -29,7 +31,7 @@ export default class ReelsHolder extends Container {
         this.addChild(frame)
 
         this.reels = []
-        for (let i = 0; i < REELS_PER_REEL_HOLDER; i++) {
+        for (let i = 0; i < numOfReels; i++) {
             this.reels.push(new Reel(i * (STRIPE_SIZE + REELS_HOLDER_FRAME_THICKNESS), 0))
             this.addChild(this.reels[i])
         }
@@ -37,6 +39,10 @@ export default class ReelsHolder extends Container {
         this.makeReelsPretty()
 
         this.mainTimeline = gsap.timeline()
+    }
+
+    get numOfReels() {
+        return this.reels.length
     }
 
     private makeReelsPretty() {
@@ -70,7 +76,6 @@ export default class ReelsHolder extends Container {
 
         this.mainTimeline.addLabel('reelsStopping', REEL_SPIN_START_ROTATION + REEL_SPIN_MID_ROTATION)
         this.mainTimeline.pause()
-        dataController.symbolCombination = this.symbolsCombination
     }
 
     private resetMainTimeline() {
