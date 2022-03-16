@@ -6,7 +6,7 @@ import { gsap } from 'gsap'
 import { PixiPlugin } from 'gsap/PixiPlugin'
 import winCalculator from './WinCalculator'
 import { Symbols } from '../constants/winLinesData'
-import { AutoSpinBtnState, SpinBtnState } from '../constants'
+import { AutoSpinBtnState, BONUS_ROUNDS, SpinBtnState } from '../constants'
 import assetLoader from './AssetLoader'
 import soundController from './SoundController'
 
@@ -64,7 +64,7 @@ class GameController {
         this.slotMachine.linesSelector.displayValue = newNumOfLines
         this.slotMachine.totalBetDisplay.displayValue = dataController.totalBet
 
-        this.slotMachine.winLines.displayOnlySelectedLines()
+        this.slotMachine.reelsHolder.winLines.displayOnlySelectedLines()
     }
 
     public decreaseNumberOfLines() {
@@ -76,7 +76,7 @@ class GameController {
         this.slotMachine.linesSelector.displayValue = newNumOfLines
         this.slotMachine.totalBetDisplay.displayValue = dataController.totalBet
 
-        this.slotMachine.winLines.displayOnlySelectedLines()
+        this.slotMachine.reelsHolder.winLines.displayOnlySelectedLines()
     }
 
     public increaseBet() {
@@ -88,7 +88,7 @@ class GameController {
         this.slotMachine.betSelector.displayValue = newBet
         this.slotMachine.totalBetDisplay.displayValue = dataController.totalBet
 
-        this.slotMachine.winLines.hideAllLines()
+        this.slotMachine.reelsHolder.winLines.hideAllLines()
     }
 
     public decreaseBet() {
@@ -100,14 +100,14 @@ class GameController {
         this.slotMachine.betSelector.displayValue = newBet
         this.slotMachine.totalBetDisplay.displayValue = dataController.totalBet
 
-        this.slotMachine.winLines.hideAllLines()
+        this.slotMachine.reelsHolder.winLines.hideAllLines()
     }
 
     public async spinAutomatiaclly() {
-        this.slotMachine.autoSpinButton.setStateOn()
+        this.slotMachine.autoSpinButton.setStateOnEnabled()
         dataController.autoSpinning = true
 
-        while (dataController.autoSpinButtonState === AutoSpinBtnState.On) {
+        while (dataController.autoSpinButtonState === AutoSpinBtnState.OnEnabled) {
             await this.spin()
         }
 
@@ -120,7 +120,7 @@ class GameController {
 
     public handleAutoSpinButtonEvent() {
         switch (dataController.autoSpinButtonState) {
-            case AutoSpinBtnState.On: {
+            case AutoSpinBtnState.OnEnabled: {
                 this.slotMachine.autoSpinButton.setStateOffDisabled()
                 break
             }
@@ -169,7 +169,7 @@ class GameController {
         this.slotMachine.spinButton.setStateSkip()
         this.slotMachine.betSelector.disableSelector()
         this.slotMachine.linesSelector.disableSelector()
-        this.slotMachine.winLines.hideAllLines()
+        this.slotMachine.reelsHolder.winLines.hideAllLines()
 
         await this.takeMoney(dataController.totalBet)
 
@@ -177,13 +177,36 @@ class GameController {
             this.slotMachine.spinButton.setStateDisabledSkip()
         })
 
-        winCalculator.calculateWin(this.slotMachine.reelsHolder)
+        const isBonusRoundAwarded = winCalculator.calculateWin(this.slotMachine.reelsHolder)
+        if (isBonusRoundAwarded) await this.spinBonusRounds()
         if (dataController.totalCashWin) {
             this.slotMachine.spinButton.setStateCollect()
             await this.slotMachine.animateWin()
         }
 
         this.slotMachine.cashTray.displayValue = ''
+    }
+
+    private async spinBonusRounds() {
+        const special = dataController.wins.find((win) => win.winSymbol === Symbols.Reward1000)
+        if (!special) throw new Error('missing special win object')
+
+        dataController.bonusRoundWin = dataController.totalCashWin
+        this.slotMachine.startBonusMode(special.matchCount)
+        dataController.isInBonusMode = true
+        if (dataController.autoSpinButtonState === AutoSpinBtnState.OnEnabled)
+            this.slotMachine.autoSpinButton.setStateOnDisabled()
+
+        for (let i = 0; i < BONUS_ROUNDS; i++) {
+            //display filter
+            await this.spin()
+        }
+
+        dataController.totalCashWin = dataController.bonusRoundWin
+        dataController.isInBonusMode = false
+        this.slotMachine.endBonusMode()
+        if (dataController.autoSpinButtonState === AutoSpinBtnState.onDisabled)
+            this.slotMachine.autoSpinButton.setStateOnEnabled()
     }
 
     private async takeMoney(amount: number) {

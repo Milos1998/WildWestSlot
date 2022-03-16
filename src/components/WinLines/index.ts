@@ -16,7 +16,7 @@ export default class WinLines extends Container {
     constructor(x: number, y: number, width: number, height: number, numOfReels: number) {
         super()
 
-        this.x = x - REELS_HOLDER_FRAME_THICKNESS
+        this.x = x
         this.y = y
         this.myWidth = width
         this.myHeight = height
@@ -89,10 +89,10 @@ export default class WinLines extends Container {
             this.toggleMaskVisibility(true, timeline, this.lines[win.winLine], mask, 0)
 
             //get all the symbols that are part of winning line and animate them on same timeline.
-            for (let reelNum = 0; reelNum <= win.numberOfMatches; reelNum++) {
+            for (let reelNum = 0; reelNum < win.matchCount; reelNum++) {
                 const positionOnReel = WIN_LINES_DATA[win.winLine].winPositions[reelNum]
                 stripes[reelNum][positionOnReel].animateSprite(timeline, this.lines[win.winLine].line.color, mask)
-                if (reelNum === win.numberOfMatches) stripes[reelNum][positionOnReel].displayAmount(win.winAmount)
+                if (reelNum === win.matchCount - 1) stripes[reelNum][positionOnReel].displayAmount(win.winAmount)
             }
 
             this.toggleMaskVisibility(false, timeline, this.lines[win.winLine], mask, timeline.duration())

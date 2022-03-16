@@ -3,6 +3,7 @@ export const APP_HEIGHT = 550
 
 export const STRIPE_SIZE = 112
 
+export const BONUS_ROUNDS = 5
 export const STRIPES_PER_REEL = 3
 export const REEL_WIDTH = STRIPE_SIZE
 export const REEL_HEIGHT = STRIPES_PER_REEL * STRIPE_SIZE
@@ -41,6 +42,15 @@ export const LOAD_BAR_WIDTH = APP_WIDTH * 0.8
 export const LOAD_BAR_HEIGHT = 50
 export const LOAD_BAR_X = (APP_WIDTH - LOAD_BAR_WIDTH) / 2
 export const LOAD_BAR_Y = APP_HEIGHT * 0.7
+export const MODAL_FILTER_ITEM_SCALE = 0.7
+export const MODAL_FILTER_PADDING = 10
+export const MODAL_FILTER_ROWS = 4
+export const MODAL_FILTER_X =
+    (APP_WIDTH -
+        MODAL_FILTER_ROWS * (STRIPE_SIZE * MODAL_FILTER_ITEM_SCALE) -
+        (MODAL_FILTER_ROWS - 1) * MODAL_FILTER_PADDING) /
+    2
+export const MODAL_FILTER_Y = 100
 
 //colors and lines
 export const APP_BACKGROUND_COLOR = 0xb45f06
@@ -57,7 +67,7 @@ export const SPIN_BUTTON_ACTIVE_COLOR = 0xda0b20
 export const SPIN_BUTTON_INACTIVE_TINT = 0x888888
 export const AUTO_SPIN_BUTTON_ON_COLOR = 0x007400
 export const AUTO_SPIN_BUTTON_OFF_COLOR = 0x302986
-export const AUTO_SPIN_BUTTON_OFF_INACTIVE_TINT = 0x888888
+export const AUTO_SPIN_BUTTON_INACTIVE_TINT = 0x888888
 export const BUTTON_DECORATION_ACTIVE_COLOR = BUTTONS_FRAME_COLOR
 export const BUTTON_DECORATION_INACTIVE_COLOR = 0x845d01
 export const WIN_LINE_THICKNESS = 6
@@ -89,5 +99,6 @@ export enum SpinBtnState {
 export enum AutoSpinBtnState {
     OffDisabled,
     OffEnabled,
-    On
+    OnEnabled,
+    onDisabled
 }

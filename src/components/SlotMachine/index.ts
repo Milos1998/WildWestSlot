@@ -25,17 +25,16 @@ import dataController from '../../logic/DataController'
 import gameController from '../../logic/GameController'
 import soundController from '../../logic/SoundController'
 import AutoSpinButton from '../AutoSpinButton'
-import BonusSpin from '../BonusSpin.ts'
 import Display from '../Display'
 import { Info } from '../Info'
+import { Modal } from '../Modal'
 import ReelsHolder from '../ReelsHolder'
 import SpinButton from '../SpinButton'
-import WinLines from '../WinLines'
 
 export default class SlotMachine extends Container {
     private machineDecoration: Sprite
-    //controllable elements
-    public reelsHolder: ReelsHolder
+    private _reelsHolder: ReelsHolder
+    private _bonusReelHolder: ReelsHolder | undefined = undefined
     public linesSelector: Display
     public betSelector: Display
     public totalBetDisplay: Display
@@ -43,10 +42,9 @@ export default class SlotMachine extends Container {
     public balance: Display
     public spinButton: SpinButton
     public autoSpinButton: AutoSpinButton
-    public winLines: WinLines
     private infoButton: Info
     private mainTimeline: gsap.core.Timeline
-    public bonusSpin: BonusSpin
+    private modal: Modal
 
     constructor() {
         super()
@@ -58,24 +56,14 @@ export default class SlotMachine extends Container {
         this.addChild(this.machineDecoration)
 
         //reels holder
-        this.reelsHolder = new ReelsHolder(
+        this._reelsHolder = new ReelsHolder(
             REELS_HOLDER_X,
             REELS_HOLDER_Y,
             reelsHolderWidth(REELS_PER_REEL_HOLDER),
             REELS_HOLDER_HEIGHT,
             REELS_PER_REEL_HOLDER
         )
-        this.addChild(this.reelsHolder)
-
-        //winlines
-        this.winLines = new WinLines(
-            REELS_HOLDER_X,
-            REELS_HOLDER_Y,
-            reelsHolderWidth(REELS_PER_REEL_HOLDER),
-            REELS_HOLDER_HEIGHT,
-            REELS_PER_REEL_HOLDER
-        )
-        this.addChild(this.winLines)
+        this.addChild(this._reelsHolder)
 
         //left pannel
         this.linesSelector = new Display(
@@ -136,10 +124,36 @@ export default class SlotMachine extends Container {
         this.infoButton = new Info()
         this.addChild(this.infoButton)
 
-        this.bonusSpin = new BonusSpin()
-        this.addChild(this.bonusSpin)
+        this.modal = new Modal()
+        this.addChild(this.modal)
 
         this.mainTimeline = gsap.timeline()
+    }
+
+    get reelsHolder() {
+        if (this._bonusReelHolder) return this._bonusReelHolder
+        return this._reelsHolder
+    }
+
+    public startBonusMode(numOfReels: number) {
+        this._bonusReelHolder = new ReelsHolder(
+            REELS_HOLDER_X + (reelsHolderWidth(REELS_PER_REEL_HOLDER) - reelsHolderWidth(numOfReels)) / 2,
+            REELS_HOLDER_Y,
+            reelsHolderWidth(numOfReels),
+            REELS_HOLDER_HEIGHT,
+            numOfReels
+        )
+        this.addChild(this._bonusReelHolder)
+        this._reelsHolder.visible = false
+    }
+
+    public endBonusMode() {
+        if (!this._bonusReelHolder) throw new Error('Failed to delete bonus reels holder')
+        this.removeChild(this._bonusReelHolder)
+        this._bonusReelHolder.destroy()
+        this._bonusReelHolder = undefined
+
+        this._reelsHolder.visible = true
     }
 
     public async animateWin() {
@@ -149,7 +163,7 @@ export default class SlotMachine extends Container {
     }
 
     private queueWinAnimations() {
-        const winlinesAnimation = this.winLines.queueWinningLinesAnimation(this.reelsHolder.stripes)
+        const winlinesAnimation = this.reelsHolder.winLines.queueWinningLinesAnimation(this.reelsHolder.stripes)
 
         let cashAnimationDuration: number
         if (dataController.totalCashWin < 2 * dataController.totalBet) cashAnimationDuration = 1
@@ -179,10 +193,24 @@ export default class SlotMachine extends Container {
     }
 
     public stopWinAnimation() {
-        this.winLines.stopWinningLinesAnimation()
+        this.reelsHolder.winLines.stopWinningLinesAnimation()
         this.cashTray.stopDisplayValueChangeAnimation()
         this.mainTimeline.pause().progress(1)
         this.resetMainTimeline()
+    }
+
+    public animateBonusRoundIntro() {
+        this.queueBonusRoundIntro()
+
+        return this.mainTimeline.play()
+    }
+
+    private queueBonusRoundIntro() {
+        //
+    }
+
+    public stopBonusRoundIntro() {
+        //
     }
 
     private resetMainTimeline() {

@@ -10,9 +10,11 @@ import {
 } from '../../constants'
 import dataController from '../../logic/DataController'
 import Reel from '../Reel'
+import WinLines from '../WinLines'
 
 export default class ReelsHolder extends Container {
     private reels: Reel[]
+    public winLines: WinLines
     private mainTimeline: gsap.core.Timeline
 
     constructor(x: number, y: number, width: number, height: number, numOfReels: number) {
@@ -37,6 +39,9 @@ export default class ReelsHolder extends Container {
         }
 
         this.makeReelsPretty()
+
+        this.winLines = new WinLines(-REELS_HOLDER_FRAME_THICKNESS, 0, this.width, this.height, numOfReels)
+        this.addChild(this.winLines)
 
         this.mainTimeline = gsap.timeline()
     }

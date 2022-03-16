@@ -2,7 +2,7 @@ import { Graphics, Sprite, TextStyle, Text } from 'pixi.js'
 import {
     AutoSpinBtnState,
     AUTO_SPIN_BUTTON_OFF_COLOR,
-    AUTO_SPIN_BUTTON_OFF_INACTIVE_TINT,
+    AUTO_SPIN_BUTTON_INACTIVE_TINT,
     AUTO_SPIN_BUTTON_ON_COLOR,
     BUTTONS_FRAME_COLOR,
     BUTTONS_FRAME_THICKNESS,
@@ -57,7 +57,7 @@ export default class AutoSpinButton extends Graphics {
         this.interactive = true
     }
 
-    public setStateOn() {
+    public setStateOnEnabled() {
         this.description.text = 'Auto: on'
         this.description.tint = BUTTON_DECORATION_ACTIVE_COLOR
 
@@ -67,7 +67,20 @@ export default class AutoSpinButton extends Graphics {
         this.tint = 0xffffff
 
         this.interactive = true
-        dataController.autoSpinButtonState = AutoSpinBtnState.On
+        dataController.autoSpinButtonState = AutoSpinBtnState.OnEnabled
+    }
+
+    public setStateOnDisabled() {
+        this.description.text = 'Auto: on'
+        this.description.tint = BUTTON_DECORATION_INACTIVE_COLOR
+
+        this.image.tint = BUTTON_DECORATION_INACTIVE_COLOR
+
+        this.reDrawRec(AUTO_SPIN_BUTTON_ON_COLOR)
+        this.tint = AUTO_SPIN_BUTTON_INACTIVE_TINT
+
+        this.interactive = false
+        dataController.autoSpinButtonState = AutoSpinBtnState.onDisabled
     }
 
     public setStateOffEnabled() {
@@ -90,7 +103,7 @@ export default class AutoSpinButton extends Graphics {
         this.image.tint = BUTTON_DECORATION_INACTIVE_COLOR
 
         this.reDrawRec(AUTO_SPIN_BUTTON_OFF_COLOR)
-        this.tint = AUTO_SPIN_BUTTON_OFF_INACTIVE_TINT
+        this.tint = AUTO_SPIN_BUTTON_INACTIVE_TINT
 
         this.interactive = false
         dataController.autoSpinButtonState = AutoSpinBtnState.OffDisabled

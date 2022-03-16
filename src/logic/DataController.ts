@@ -12,8 +12,11 @@ class DataController {
     public spinButtonState: SpinBtnState = SpinBtnState.Neutral
     public autoSpinButtonState: AutoSpinBtnState = AutoSpinBtnState.OffEnabled
     public totalCashWin = 0
-    public wins: WinObject[] = []
+    public bonusRoundWin = 0
+    private standardWins: WinObject[] = []
+    private bonusWins: WinObject[] = []
     public autoSpinning = false
+    public isInBonusMode = false
 
     private constructor() {
         this.initStripeSymbols()
@@ -101,6 +104,16 @@ class DataController {
 
     public updateBalance(amount: number) {
         this._balance += amount
+    }
+
+    get wins() {
+        if (this.isInBonusMode) return this.bonusWins
+        return this.standardWins
+    }
+
+    set wins(wins: WinObject[]) {
+        if (this.isInBonusMode) this.bonusWins = wins
+        else this.standardWins = wins
     }
 }
 

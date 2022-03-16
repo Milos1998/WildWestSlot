@@ -6,7 +6,7 @@ export class WinObject {
     winAmount = 0
     winLine = 0
     winSymbol = ''
-    numberOfMatches = 0
+    matchCount = 0
 }
 
 class WinCalculator {
@@ -27,9 +27,11 @@ class WinCalculator {
         this.calculateMatches(reelsHolder)
         this.calculateSpecials(reelsHolder)
         this.calculateWinAmounts()
+        const isBonusRoundAwarded = this.isBonusRoundAwarded()
 
         dataController.wins = this.wins
         dataController.totalCashWin = this.totalWinAmount
+        return isBonusRoundAwarded
     }
 
     private calculateMatches(reelsHolder: ReelsHolder) {
@@ -44,9 +46,9 @@ class WinCalculator {
             win.winSymbol = first
             win.winLine = currentLine
 
-            for (let currentReel = 1; currentReel < reelsHolder.numOfReels; currentReel++) {
+            for (let currentReel = 0; currentReel < reelsHolder.numOfReels; currentReel++) {
                 if (this.isMatching(symbolCombination[currentReel][wp[currentReel]], win)) {
-                    win.numberOfMatches++
+                    win.matchCount++
                 } else {
                     break
                 }
@@ -54,7 +56,7 @@ class WinCalculator {
             this.wins.push(win)
         }
 
-        this.wins = this.wins.filter((win) => win.numberOfMatches > 0)
+        this.wins = this.wins.filter((win) => win.matchCount > 0)
     }
 
     private isMatching(sym: string, win: WinObject): boolean {
@@ -85,17 +87,15 @@ class WinCalculator {
 
         const win = new WinObject()
         win.winSymbol = Symbols.Reward1000
-        let found = 0
         for (const reel of symbolCombination) {
             for (const sym of reel) {
-                if (sym === Symbols.Reward1000) found++
+                if (sym === Symbols.Reward1000) win.matchCount++
             }
         }
 
-        if (found > reelsHolder.numOfReels) found = reelsHolder.numOfReels
+        if (win.matchCount > reelsHolder.numOfReels) win.matchCount = reelsHolder.numOfReels
 
-        win.numberOfMatches = found - 1
-        if (found) this.wins.push(win)
+        if (win.matchCount) this.wins.push(win)
     }
 
     private calculateWinAmounts() {
@@ -104,13 +104,22 @@ class WinCalculator {
             if (!payoutData) return
 
             if (win.winSymbol !== Symbols.Reward1000)
-                win.winAmount = payoutData.payoutPerMatch[win.numberOfMatches] * dataController.bet
-            else win.winAmount = payoutData.payoutPerMatch[win.numberOfMatches] * dataController.totalBet
+                win.winAmount = payoutData.payoutPerMatch[win.matchCount - 1] * dataController.bet
+            else win.winAmount = payoutData.payoutPerMatch[win.matchCount - 1] * dataController.totalBet
 
             this.totalWinAmount += win.winAmount
         })
 
         this.wins = this.wins.filter((win) => win.winAmount !== 0)
+    }
+
+    private isBonusRoundAwarded() {
+        const win = this.wins.find((win) => win.winSymbol === Symbols.Reward1000)
+
+        if (dataController.isInBonusMode || !win || win.matchCount < 3) return false
+
+        this.wins = [win]
+        return true
     }
 }
 
