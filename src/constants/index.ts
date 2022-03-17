@@ -51,6 +51,12 @@ export const MODAL_FILTER_X =
         (MODAL_FILTER_ROWS - 1) * MODAL_FILTER_PADDING) /
     2
 export const MODAL_FILTER_Y = 100
+export const MODAL_FILTER_TITLE_X = APP_WIDTH / 2
+export const MODAL_FILTER_TITLE_Y = 50
+export const MODAL_FILTER_BUTTON_WIDTH = 90
+export const MODAL_FILTER_BUTTON_HEIGHT = 40
+export const MODAL_FILTER_BUTTON_X = (APP_WIDTH - MODAL_FILTER_BUTTON_WIDTH) / 2
+export const MODAL_FILTER_BUTTON_Y = APP_HEIGHT - 80
 
 //colors and lines
 export const APP_BACKGROUND_COLOR = 0xb45f06
@@ -76,6 +82,10 @@ export const SPECIAL_SYMBOL_FRAME_COLOR = 0xf5d66a
 export const INFO_IMAGE_HEIGHT = 70
 export const LOAD_BAR_BG_COLOR = 0x0
 export const PROGRESS_BAR_COLOR = 0x110b7a
+export const MODAL_FILTER_SELECTED_ITEM_TINT = 0xbfbfbf
+export const MODAL_FILTER_DISCARTED_ITEM_TINT = 0x1f1f1f
+export const MODAL_FILTER_BUTTON_COLOR = 0x302986
+export const MODAL_FILTER_BUTTON_DISABLED_TINT = 0x888888
 
 //Data starting state
 export const BETS = [0.01, 0.02, 0.03, 0.05, 0.1, 0.2, 0.25, 0.5, 1, 2, 3, 4, 5, 10]

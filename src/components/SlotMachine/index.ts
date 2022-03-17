@@ -44,7 +44,7 @@ export default class SlotMachine extends Container {
     public autoSpinButton: AutoSpinButton
     private infoButton: Info
     private mainTimeline: gsap.core.Timeline
-    private modal: Modal
+    public modal: Modal
 
     constructor() {
         super()
@@ -136,6 +136,7 @@ export default class SlotMachine extends Container {
     }
 
     public startBonusMode(numOfReels: number) {
+        this.removeChild(this.modal)
         this._bonusReelHolder = new ReelsHolder(
             REELS_HOLDER_X + (reelsHolderWidth(REELS_PER_REEL_HOLDER) - reelsHolderWidth(numOfReels)) / 2,
             REELS_HOLDER_Y,
@@ -144,6 +145,7 @@ export default class SlotMachine extends Container {
             numOfReels
         )
         this.addChild(this._bonusReelHolder)
+        this.addChild(this.modal)
         this._reelsHolder.visible = false
     }
 

@@ -43,15 +43,7 @@ class GameController {
     }
 
     private applySpecialProperties() {
-        const filterSymbols = [
-            Symbols.NINE,
-            Symbols.TEN,
-            Symbols.J,
-            Symbols.K,
-            Symbols.Q,
-            Symbols.A,
-            Symbols.Reward1000
-        ]
+        const filterSymbols = [Symbols.NINE, Symbols.TEN, Symbols.J, Symbols.K, Symbols.Q, Symbols.A, Symbols.Clubs]
         filterSymbols.forEach((sym) => dataController.filterStripeSymbols(sym, false))
     }
 
@@ -198,10 +190,11 @@ class GameController {
             this.slotMachine.autoSpinButton.setStateOnDisabled()
 
         for (let i = 0; i < BONUS_ROUNDS; i++) {
-            //display filter
+            if (dataController.getStripeSymbols().length > 1) await this.slotMachine.modal.displayFilter()
             await this.spin()
         }
 
+        this.slotMachine.modal.resetFilter()
         dataController.totalCashWin = dataController.bonusRoundWin
         dataController.isInBonusMode = false
         this.slotMachine.endBonusMode()
