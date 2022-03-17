@@ -169,8 +169,10 @@ class GameController {
             this.slotMachine.spinButton.setStateDisabledSkip()
         })
 
-        const isBonusRoundAwarded = winCalculator.calculateWin(this.slotMachine.reelsHolder)
-        if (isBonusRoundAwarded) await this.spinBonusRounds()
+        dataController.totalCashWin = winCalculator.calculateWin(this.slotMachine.reelsHolder)
+        if (dataController.bonusLevel) {
+            await this.spinBonusRounds()
+        }
         if (dataController.totalCashWin) {
             this.slotMachine.spinButton.setStateCollect()
             await this.slotMachine.animateWin()
@@ -179,24 +181,32 @@ class GameController {
         this.slotMachine.cashTray.displayValue = ''
     }
 
-    private async spinBonusRounds() {
-        const special = dataController.wins.find((win) => win.winSymbol === Symbols.Reward1000)
-        if (!special) throw new Error('missing special win object')
+    private async bonusSpin() {
+        this.slotMachine.spinButton.setStateSkip()
 
-        dataController.bonusRoundWin = dataController.totalCashWin
-        this.slotMachine.startBonusMode(special.matchCount)
-        dataController.isInBonusMode = true
+        await this.slotMachine.reelsHolder.spinReels(() => {
+            this.slotMachine.spinButton.setStateDisabledSkip()
+        })
+        dataController.totalCashWin += winCalculator.calculateWin(this.slotMachine.reelsHolder)
+
+        if (dataController.totalCashWin) {
+            this.slotMachine.spinButton.setStateCollect()
+            await this.slotMachine.animateWin()
+        }
+    }
+
+    private async spinBonusRounds() {
         if (dataController.autoSpinButtonState === AutoSpinBtnState.OnEnabled)
             this.slotMachine.autoSpinButton.setStateOnDisabled()
+        this.slotMachine.startBonusMode(dataController.bonusLevel)
+        dataController.bonusMode = true
 
         for (let i = 0; i < BONUS_ROUNDS; i++) {
             if (dataController.getStripeSymbols().length > 1) await this.slotMachine.modal.displayFilter()
-            await this.spin()
+            await this.bonusSpin()
         }
 
-        this.slotMachine.modal.resetFilter()
-        dataController.totalCashWin = dataController.bonusRoundWin
-        dataController.isInBonusMode = false
+        dataController.bonusMode = false
         this.slotMachine.endBonusMode()
         if (dataController.autoSpinButtonState === AutoSpinBtnState.onDisabled)
             this.slotMachine.autoSpinButton.setStateOnEnabled()

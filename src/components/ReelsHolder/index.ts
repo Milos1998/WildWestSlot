@@ -76,10 +76,7 @@ export default class ReelsHolder extends Container {
         this.mainTimeline.addLabel('spinReels')
 
         for (let i = 0; i < this.reels.length; i++) {
-            this.mainTimeline.add(
-                this.reels[i].queueReelAnimation(dataController.isInBonusMode),
-                `${i * REEL_SPIN_DELAY}`
-            )
+            this.mainTimeline.add(this.reels[i].queueReelAnimation(dataController.bonusMode), `${i * REEL_SPIN_DELAY}`)
         }
 
         this.mainTimeline.addLabel('reelsStopping', REEL_SPIN_START_ROTATION + REEL_SPIN_MID_ROTATION)

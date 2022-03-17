@@ -1,5 +1,5 @@
 import gsap from 'gsap/all'
-import { Container, Sprite } from 'pixi.js'
+import { Container, Sprite, Texture } from 'pixi.js'
 import {
     BALANCE_Y,
     BET_SELECTOR_Y,
@@ -50,7 +50,7 @@ export default class SlotMachine extends Container {
         super()
 
         //set background image
-        this.machineDecoration = Sprite.from('machine-decoration')
+        this.machineDecoration = new Sprite(Texture.from('background'))
         this.machineDecoration.x = 0
         this.machineDecoration.y = 0
         this.addChild(this.machineDecoration)
@@ -147,6 +147,7 @@ export default class SlotMachine extends Container {
         this.addChild(this._bonusReelHolder)
         this.addChild(this.modal)
         this._reelsHolder.visible = false
+        this.machineDecoration.texture = Texture.from('bonus mode background')
     }
 
     public endBonusMode() {
@@ -154,8 +155,9 @@ export default class SlotMachine extends Container {
         this.removeChild(this._bonusReelHolder)
         this._bonusReelHolder.destroy()
         this._bonusReelHolder = undefined
-
+        this.modal.resetFilter()
         this._reelsHolder.visible = true
+        this.machineDecoration.texture = Texture.from('background')
     }
 
     public async animateWin() {

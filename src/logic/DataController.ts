@@ -12,11 +12,11 @@ class DataController {
     public spinButtonState: SpinBtnState = SpinBtnState.Neutral
     public autoSpinButtonState: AutoSpinBtnState = AutoSpinBtnState.OffEnabled
     public totalCashWin = 0
-    public bonusRoundWin = 0
     private standardWins: WinObject[] = []
     private bonusWins: WinObject[] = []
     public autoSpinning = false
-    public isInBonusMode = false
+    public bonusLevel = 0
+    public bonusMode = false
 
     private constructor() {
         this.initStripeSymbols()
@@ -45,9 +45,8 @@ class DataController {
 
         const index = dataController.filteredStripeSymbols.indexOf(symbol)
 
-        if (included && index === -1) dataController.filteredStripeSymbols.push(symbol)
-        else if (!included && index !== -1) dataController.filteredStripeSymbols.splice(index, 1)
-        else throw new Error(`element is ${index === -1 ? 'not' : ''} in array`)
+        if (index === -1 && included) dataController.filteredStripeSymbols.push(symbol)
+        else if (index !== -1 && !included) dataController.filteredStripeSymbols.splice(index, 1)
     }
 
     public resetStripeSymbolFilter() {
@@ -107,12 +106,12 @@ class DataController {
     }
 
     get wins() {
-        if (this.isInBonusMode) return this.bonusWins
+        if (this.bonusMode) return this.bonusWins
         return this.standardWins
     }
 
     set wins(wins: WinObject[]) {
-        if (this.isInBonusMode) this.bonusWins = wins
+        if (this.bonusMode) this.bonusWins = wins
         else this.standardWins = wins
     }
 }

@@ -27,11 +27,10 @@ class WinCalculator {
         this.calculateMatches(reelsHolder)
         this.calculateSpecials(reelsHolder)
         this.calculateWinAmounts()
-        const isBonusRoundAwarded = this.isBonusRoundAwarded()
+        this.calculateBonusLevel()
 
         dataController.wins = this.wins
-        dataController.totalCashWin = this.totalWinAmount
-        return isBonusRoundAwarded
+        return this.totalWinAmount
     }
 
     private calculateMatches(reelsHolder: ReelsHolder) {
@@ -113,13 +112,15 @@ class WinCalculator {
         this.wins = this.wins.filter((win) => win.winAmount !== 0)
     }
 
-    private isBonusRoundAwarded() {
+    private calculateBonusLevel() {
         const win = this.wins.find((win) => win.winSymbol === Symbols.Reward1000)
 
-        if (dataController.isInBonusMode || !win || win.matchCount < 3) return false
-
-        this.wins = [win]
-        return true
+        if (dataController.bonusMode || !win || win.matchCount < 3) {
+            dataController.bonusLevel = 0
+        } else {
+            this.wins = [win]
+            dataController.bonusLevel = win.matchCount
+        }
     }
 }
 
