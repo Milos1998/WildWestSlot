@@ -41,38 +41,62 @@ export default class Reel extends Container {
         }
     }
 
-    private insertStripe(symbol = '') {
+    private insertStripe(front: boolean) {
+        if (front) this.pushFrontStripe()
+        else this.pushBackStripe()
+    }
+
+    private pushBackStripe(symbol = '') {
+        const last = this._stripes[this._stripes.length - 1]
+        const str = new Stripe(last.x, last.y + last.height, last.width, last.height, symbol)
+        this._stripes.push(str)
+        this.addChild(str)
+    }
+
+    private pushFrontStripe(symbol = '') {
         const first = this._stripes[0]
         const str = new Stripe(first.x, first.y - first.height, first.width, first.height, symbol)
         this._stripes.unshift(str)
         this.addChild(str)
     }
 
-    public queueReelAnimation() {
+    private trimStripes(front: boolean) {
+        if (front) {
+            this.forCleanup = [this._stripes.shift() as Stripe]
+            this.forCleanup = [...this._stripes.splice(STRIPES_PER_REEL)]
+        } else {
+            this.forCleanup = [this._stripes.pop() as Stripe]
+            this.forCleanup = [...this._stripes.splice(0, this._stripes.length - STRIPES_PER_REEL)]
+        }
+    }
+
+    public queueReelAnimation(randomDirection: boolean) {
         const reelTimeline = gsap.timeline()
 
+        let direction = 1
+        if (randomDirection) direction = Math.random() * 2 - 1
         const midSpinRotations = 40
         const aditionalStripes = STRIPES_PER_REEL + midSpinRotations + STRIPES_PER_REEL + 1
-        for (let i = 0; i < aditionalStripes; i++) this.insertStripe()
+        for (let i = 0; i < aditionalStripes; i++) this.insertStripe(direction > 0)
 
         reelTimeline
             .to(this._stripes, {
                 pixi: {
-                    y: `+=${STRIPES_PER_REEL * STRIPE_SIZE}`
+                    y: `${direction > 0 ? '+' : '-'}=${STRIPES_PER_REEL * STRIPE_SIZE}`
                 },
                 ease: 'power3.in',
                 duration: REEL_SPIN_START_ROTATION
             })
             .to(this._stripes, {
                 pixi: {
-                    y: `+=${midSpinRotations * STRIPE_SIZE}`
+                    y: `${direction > 0 ? '+' : '-'}=${midSpinRotations * STRIPE_SIZE}`
                 },
                 duration: REEL_SPIN_MID_ROTATION,
                 ease: 'none'
             })
             .to(this._stripes, {
                 pixi: {
-                    y: `+=${STRIPES_PER_REEL * STRIPE_SIZE}`
+                    y: `${direction > 0 ? '+' : '-'}=${STRIPES_PER_REEL * STRIPE_SIZE}`
                 },
                 ease: 'back.out(1.7)',
                 duration: REEL_SPIN_END_ROTATION
@@ -86,8 +110,7 @@ export default class Reel extends Container {
             reelTimeline.duration()
         )
 
-        this.forCleanup = [this._stripes.shift() as Stripe]
-        this.forCleanup = [...this._stripes.splice(STRIPES_PER_REEL)]
+        this.trimStripes(direction > 0)
 
         return reelTimeline
     }
