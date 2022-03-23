@@ -23,8 +23,14 @@ export const ASSETS = [
     { name: 'spin', url: './assets/spin.png' },
     { name: 'auto-spin', url: './assets/auto-spin.png' },
     { name: 'info', url: './assets/information.png' },
-    { name: 'reel stopping', url: './assets/reel stop short.mp3', preload: true },
+    { name: 'bonus sign', url: './assets/bonus sign.png' },
+    { name: 'reel stopping', url: './assets/reel stop.mp3', preload: true },
     { name: 'coin drop long', url: './assets/coin drop long1.mp3', preload: true },
     { name: 'specials theme', url: './assets/The good the bad and the ugly - short.mp3', preload: true },
-    { name: 'background sound', url: './assets/Maple Leaf Rag.mp3', preload: true }
+    { name: 'background song', url: './assets/background sound.mp3', preload: true },
+    { name: 'bonus level song', url: './assets/bonus level song.mp3', preload: true },
+    { name: 'collect money', url: './assets/collect money leveled.mp3', preload: true },
+    { name: 'spin lever', url: './assets/spin lever.mp3', preload: true },
+    { name: 'eagle', url: './assets/Eagle Sound Effect.mp3', preload: true },
+    { name: 'gun shot', url: './assets/gunshot.mp3', preload: true }
 ]

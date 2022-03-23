@@ -15,7 +15,7 @@ clickToStart.onclick = () => {
         autoDensity: true
     })
 
-    gameController.initGameController(app)
+    gameController.initController(app)
 
     clickToStart.style.display = 'none'
 }

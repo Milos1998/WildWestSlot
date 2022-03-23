@@ -13,10 +13,8 @@ import soundController from './SoundController'
 //Syncs processes of the game
 class GameController {
     private static _instance: GameController | undefined = undefined
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private app: Application = undefined as any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private slotMachine: SlotMachine = undefined as any
+    private app!: Application
+    private slotMachine!: SlotMachine
 
     static get instance() {
         if (!GameController._instance) {
@@ -26,9 +24,9 @@ class GameController {
         return GameController._instance
     }
 
-    public initGameController(_app: Application) {
+    public initController(_app: Application) {
         this.app = _app
-        this.app.stage.addChild(assetLoader.initAssetLoader())
+        this.app.stage.addChild(assetLoader.initLoader())
     }
 
     //get's called from Loader when caching is finished
@@ -39,7 +37,7 @@ class GameController {
 
         this.slotMachine = new SlotMachine()
         this.app.stage.addChild(this.slotMachine)
-        soundController.playBackgroundSong()
+        soundController.backgroundSong.play()
     }
 
     private applySpecialProperties() {
@@ -137,6 +135,7 @@ class GameController {
     public handleSpinButtonEvent() {
         switch (dataController.spinButtonState) {
             case SpinBtnState.Neutral: {
+                soundController.spinSound.play()
                 this.spinManually()
                 break
             }
@@ -145,6 +144,7 @@ class GameController {
                 break
             }
             case SpinBtnState.Collect: {
+                soundController.collectSound.play()
                 this.collectCash()
                 break
             }
@@ -201,10 +201,14 @@ class GameController {
         this.slotMachine.startBonusMode(dataController.bonusLevel)
         dataController.bonusMode = true
 
+        this.slotMachine.animateBonusRoundIntro()
+
         for (let i = 0; i < BONUS_ROUNDS; i++) {
             if (dataController.getStripeSymbols().length > 1) await this.slotMachine.modal.displayFilter()
             await this.bonusSpin()
         }
+
+        this.slotMachine.stopBonusRoundIntro()
 
         dataController.bonusMode = false
         this.slotMachine.endBonusMode()

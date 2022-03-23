@@ -4,6 +4,7 @@ import {
     REEL_SPIN_END_ROTATION,
     REEL_SPIN_MID_ROTATION,
     REEL_SPIN_START_ROTATION,
+    SOUND_DELAY,
     STRIPES_PER_REEL,
     STRIPE_SIZE
 } from '../../constants'
@@ -46,14 +47,14 @@ export default class Reel extends Container {
         else this.pushBackStripe()
     }
 
-    private pushBackStripe(symbol = '') {
+    private pushBackStripe(symbol?: string) {
         const last = this._stripes[this._stripes.length - 1]
         const str = new Stripe(last.x, last.y + last.height, last.width, last.height, symbol)
         this._stripes.push(str)
         this.addChild(str)
     }
 
-    private pushFrontStripe(symbol = '') {
+    private pushFrontStripe(symbol?: string) {
         const first = this._stripes[0]
         const str = new Stripe(first.x, first.y - first.height, first.width, first.height, symbol)
         this._stripes.unshift(str)
@@ -104,10 +105,10 @@ export default class Reel extends Container {
 
         reelTimeline.call(
             () => {
-                soundController.playReelStopping()
+                soundController.reelStopping.play()
             },
             undefined,
-            reelTimeline.duration()
+            reelTimeline.duration() - SOUND_DELAY
         )
 
         this.trimStripes(direction > 0)
@@ -129,7 +130,7 @@ export default class Reel extends Container {
 
     public dance() {
         const timeline = gsap.timeline()
-        this.stripes.forEach((stripe) => stripe.dance(timeline))
+        this.stripes.forEach((stripe) => timeline.add(stripe.dance(), 0))
         return timeline
     }
 }

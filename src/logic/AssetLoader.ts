@@ -9,6 +9,7 @@ import {
     PROGRESS_BAR_COLOR
 } from '../constants'
 import gameController from './GameController'
+import soundController from './SoundController'
 
 class AssetLoader extends Container {
     private static _instance: AssetLoader | undefined = undefined
@@ -22,7 +23,7 @@ class AssetLoader extends Container {
         this.progressBar = new Graphics()
     }
 
-    public initAssetLoader() {
+    public initLoader() {
         //setup graphics for progression
         this.progressBar.beginFill(PROGRESS_BAR_COLOR)
         this.progressBar.drawRect(0, 0, LOAD_BAR_WIDTH, LOAD_BAR_HEIGHT)
@@ -67,6 +68,7 @@ class AssetLoader extends Container {
 
     private loadingCompleted() {
         this.removeChild(this.loadProgressionBar, this.progressBar)
+        soundController.initController()
         gameController.initGameElements()
     }
 }

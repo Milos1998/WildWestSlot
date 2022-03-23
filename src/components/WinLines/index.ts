@@ -91,8 +91,9 @@ export default class WinLines extends Container {
             //get all the symbols that are part of winning line and animate them on same timeline.
             for (let reelNum = 0; reelNum < win.matchCount; reelNum++) {
                 const positionOnReel = WIN_LINES_DATA[win.winLine].winPositions[reelNum]
-                stripes[reelNum][positionOnReel].animateSprite(timeline, this.lines[win.winLine].line.color, mask)
-                if (reelNum === win.matchCount - 1) stripes[reelNum][positionOnReel].displayAmount(win.winAmount)
+                const displayAmount = reelNum === win.matchCount - 1 ? win.winAmount : undefined
+                const frameColor = this.lines[win.winLine].line.color
+                timeline.add(stripes[reelNum][positionOnReel].winAnimation(frameColor, mask, displayAmount), 0)
             }
 
             this.toggleMaskVisibility(false, timeline, this.lines[win.winLine], mask, timeline.duration())
@@ -104,18 +105,14 @@ export default class WinLines extends Container {
     }
 
     private queueSpecialsAnimation(timeline: gsap.core.Timeline, winAmount: number, stripes: Stripe[][]) {
-        for (const reel of stripes) {
-            for (const stripe of reel) {
-                if (stripe.symbol === Symbols.Reward1000) {
-                    stripe.animateSprite(timeline)
-                    stripe.displayAmount(winAmount)
-                }
-            }
-        }
+        for (const reel of stripes)
+            for (const stripe of reel)
+                if (stripe.symbol === Symbols.Reward1000)
+                    timeline.add(stripe.winAnimation(undefined, undefined, winAmount), 0)
 
         timeline.call(
             () => {
-                soundController.playSpecialsTheme()
+                // soundController.playSpecialsTheme()
             },
             undefined,
             0

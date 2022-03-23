@@ -203,51 +203,51 @@ export const Symbols = {
 export const PAYTABLE = [
     {
         symbol: Symbols.Wild,
-        payoutPerMatch: [0, 10, 200, 2000, 10000]
+        payoutPerMatch: [0, 10, 75, 150, 5000]
     },
     {
         symbol: Symbols.Sherif,
-        payoutPerMatch: [0, 2, 25, 100, 750]
+        payoutPerMatch: [0, 2, 30, 75, 500]
     },
     {
         symbol: Symbols.Diamonds,
-        payoutPerMatch: [0, 2, 25, 100, 750]
+        payoutPerMatch: [0, 2, 30, 75, 500]
     },
     {
         symbol: Symbols.Hearts,
-        payoutPerMatch: [0, 0, 15, 100, 400]
+        payoutPerMatch: [0, 0, 20, 50, 250]
     },
     {
         symbol: Symbols.Spades,
-        payoutPerMatch: [0, 0, 10, 75, 250]
+        payoutPerMatch: [0, 0, 20, 50, 250]
     },
     {
         symbol: Symbols.Clubs,
-        payoutPerMatch: [0, 0, 10, 50, 250]
+        payoutPerMatch: [0, 0, 20, 50, 250]
     },
     {
         symbol: Symbols.A,
-        payoutPerMatch: [0, 0, 10, 50, 125]
+        payoutPerMatch: [0, 0, 10, 30, 150]
     },
     {
         symbol: Symbols.K,
-        payoutPerMatch: [0, 0, 5, 50, 100]
+        payoutPerMatch: [0, 0, 5, 20, 100]
     },
     {
         symbol: Symbols.Q,
-        payoutPerMatch: [0, 0, 5, 25, 100]
+        payoutPerMatch: [0, 0, 5, 20, 100]
     },
     {
         symbol: Symbols.J,
-        payoutPerMatch: [0, 0, 5, 25, 100]
+        payoutPerMatch: [0, 0, 5, 20, 100]
     },
     {
         symbol: Symbols.TEN,
-        payoutPerMatch: [0, 0, 5, 25, 100]
+        payoutPerMatch: [0, 0, 5, 15, 75]
     },
     {
         symbol: Symbols.NINE,
-        payoutPerMatch: [0, 2, 5, 25, 100]
+        payoutPerMatch: [0, 2, 5, 15, 75]
     },
     {
         symbol: Symbols.Reward1000,

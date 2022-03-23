@@ -137,6 +137,7 @@ export default class SlotMachine extends Container {
 
     public startBonusMode(numOfReels: number) {
         this.removeChild(this.modal)
+        this._reelsHolder.visible = false
         this._bonusReelHolder = new ReelsHolder(
             REELS_HOLDER_X + (reelsHolderWidth(REELS_PER_REEL_HOLDER) - reelsHolderWidth(numOfReels)) / 2,
             REELS_HOLDER_Y,
@@ -146,8 +147,9 @@ export default class SlotMachine extends Container {
         )
         this.addChild(this._bonusReelHolder)
         this.addChild(this.modal)
-        this._reelsHolder.visible = false
         this.machineDecoration.texture = Texture.from('bonus mode background')
+        soundController.backgroundSong.stop()
+        soundController.bonusLevelSong.play()
     }
 
     public endBonusMode() {
@@ -158,6 +160,8 @@ export default class SlotMachine extends Container {
         this.modal.resetFilter()
         this._reelsHolder.visible = true
         this.machineDecoration.texture = Texture.from('background')
+        soundController.bonusLevelSong.stop()
+        soundController.backgroundSong.play()
     }
 
     public async animateWin() {
@@ -178,7 +182,7 @@ export default class SlotMachine extends Container {
             dataController.totalCashWin,
             cashAnimationDuration,
             () => {
-                soundController.playCoinDrop()
+                // soundController.playCoinDrop()
             }
         )
 
@@ -210,11 +214,19 @@ export default class SlotMachine extends Container {
     }
 
     private queueBonusRoundIntro() {
-        //
+        //stirpe.bonus animation
+        this.mainTimeline.to(this.machineDecoration, { x: 0, duration: 2 })
+        this.mainTimeline.call(
+            () => {
+                soundController.eagle.play()
+            },
+            undefined,
+            0
+        )
     }
 
     public stopBonusRoundIntro() {
-        //
+        this.resetMainTimeline()
     }
 
     private resetMainTimeline() {
