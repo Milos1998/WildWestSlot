@@ -2,7 +2,7 @@
 This is wild west themed slot machine. Tech used in this project is Pixijs, Typescript, Webpack and GSAP. I've implemented singleton creation pattern and reactive programming pattern in this project.
 
 # Live version
-[Latest uploaded version]: https://optimistic-panini-c999f6.netlify.app/
+[Latest uploaded version](https://optimistic-panini-c999f6.netlify.app/)
 
 Note: game has cheat mode, where you can remove or add symbols. It is activated by clicking and holding information button in the upper right corner for 1 second.
 
